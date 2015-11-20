@@ -2,6 +2,7 @@
 ;http://xyplorer.com/xyfc/viewtopic.php?t=12588
 
 #SingleInstance, Off				;multiple instances can run for multiple XY instances
+#NoTrayIcon							;hide tray icon
 #NoEnv								;(recommended)
 SetBatchLines, 10ms					;good balance of speed/CPU (so says AHK doc)
 SetControlDelay, -1					;fastest possible control operations
@@ -22,7 +23,7 @@ ABPadding  := (ABPadding+0 = "") ? 5 : ABPadding ;default ABPadding = 5
 
 OnExit, ExitRoutine					;need to cleanup before exit
 OnMessage(0x4a, "MsgFromXY")		;WM_COPYDATA
-OnMessage(0x200, "FocusGUI")		;WM_MOUSEMOVE
+;OnMessage(0x200, "FocusGUI")		;WM_MOUSEMOVE
 OnMessage(0x7e, "Destroyer")		;WM_DESTROY
 
 ;setup GUI
