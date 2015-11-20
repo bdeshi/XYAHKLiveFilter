@@ -1,14 +1,15 @@
-## [XYAHKLiveFilter](https://www.github.com/SammaySarkar/XYAHKLiveFilter)
-http://www.xyplorer.com/xyfc/viewtopic.php?t=12588
+## XYAHKLiveFilter
+[forum](http://www.xyplorer.com/xyfc/viewtopic.php?t=12588)|[source](https://www.github.com/SammaySarkar/XYAHKLiveFilter) | 
+[releases](/../../releases)|[bugreport](/../../issues)<br/>
 
 A live-filter plugin for [XYplorer](http://www.xyplorer.com), made with [AutoHotkey](http://www.ahkscript.org)<br/>
 Live-filters the file list as you type into a textbox. Uses SC `filter`, so all its syntax is available.
 
 ###INSTALL:
 * Download and extract the release archive. Or clone this repo and compile the ahk.
-* Place **XYAHKLiveFilter.exe** in the `<xyscripts>` folder.
+* Place `XYAHKLiveFilter.exe` in the `<xyscripts>` folder.
 * Next attach the following xyscript to a CTB and/or to a UDC item (it's also available as [`XYAHKLiveFilter.xys`](/XYAHKLiveFilter.xys)).
-```
+```php
  perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
  if ($p_XYAHKLiveFilter_A != 1)||($p_XYAHKLiveFilter_B != <hwnd>){
   $p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;
@@ -16,7 +17,7 @@ Live-filters the file list as you type into a textbox. Uses SC `filter`, so all 
   $SyncToAB = 1 ; //sync filterbox position with AB
   $ABPadding = 5 ; //not effective if not $SyncToAB = 1
   run trim(<<<#RuncmD
-  "<xyscripts>\XYAHKLiveFilter.exe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB"#RuncmD,"  ",L),, 0;
+  "<xyscripts>\XYAHKLiveFilter.exe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB"#RuncmD, "  ", L),, 0;
  }
 ```
 * That's it! Now just click the CTB or trigger the UDC and filter away! (Don't forget to read about usage & options below.)

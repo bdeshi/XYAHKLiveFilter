@@ -25,7 +25,7 @@
 		//this should be modified only if filterbox top margin doesn't match addressbar's. No effect if $SyncToAB != 1
 		$ABPadding = 5 ;
 
-		run """$XYAHKLiveFilterExe"" ""<hwnd>"" ""$FocusHotkey"" ""$ABPadding"" ""$SyncToAB"" ""$CTB""", 0;
+		run """$XYAHKLiveFilterExe"" ""<hwnd>"" ""$FocusHotkey"" ""$ABPadding"" ""$SyncToAB"" ""$CTB""",, 0;
 	}
 	else {
 		if ($CTB >= 0){ctbstate(0, $CTB);} //set pressed state
