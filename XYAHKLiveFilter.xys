@@ -1,4 +1,5 @@
- //XYAHKLiveFilter v4.0.0
+ //XYAHKLiveFilter.ahk//v4.1//author:SammaySarkar
+ //http://xyplorer.com/xyfc/viewtopic.php?f=7&t=12588
  perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
  if ($p_XYAHKLiveFilter_A != 1)||($p_XYAHKLiveFilter_B != <hwnd>){
   $p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;

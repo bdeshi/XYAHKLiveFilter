@@ -1,9 +1,9 @@
 ## [XYAHKLiveFilter](https://www.github.com/SammaySarkar/XYAHKLiveFilter)
 http://www.xyplorer.com/xyfc/viewtopic.php?t=12588
 
-####**version 4**
+**version 4.1.0**
 
-A live-filter plugin for [XYplorer](http://www.xyplorer.com), made in [AutoHotkey](http://www.ahkscript.org)
+A live-filter plugin for [XYplorer](http://www.xyplorer.com), made with [AutoHotkey](http://www.ahkscript.org)
 Live-filters the file list as you type into a textbox. Uses SC `filter`, so all its syntax is available.
 
 ###INSTALL:
@@ -33,6 +33,7 @@ Live-filters the file list as you type into a textbox. Uses SC `filter`, so all 
   See `$FocusHotkey` in the **OPTIONS** section below for more details.
 * Press <kbd>ESCAPE</kbd> while the filterbox is focused to close it. (also quits automatically when parent XY window is closed.)
 * Live-filtering is not suitable for RegExp patterns. Check the **P** checkbox to pause livemode, enter complex/RegExp pattern, then uncheck it again to submit.
+* You can press <kbd>ENTER</kbd> to force a filter update while livemode is paused.
 * Full content of the filterbox is passed to SC `filter` unchanged, so should be properly escaped according to XYplorer scripting rules when necessary.
 * If you use the script as a UDC with a keyboard shortcut, I suggest setting the same shortcut as `$FocusHotkey`.<br/>
   This way, you can use the same keypresses to launch the filterbox and focus it subsequently.
@@ -62,6 +63,5 @@ Each of these variables may be set as empty, eg, `$FocusHotkey = "";`
 Well, that's about it.
 *Happy filtering!*
 
-======================
 
-I know the script can benefit from some improvements, bugfixes. All such help is welcome!
+*I know the script can benefit from some improvements, bugfixes. All such help is welcome!*
