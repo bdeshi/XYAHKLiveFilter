@@ -1,9 +1,9 @@
 ## [XYAHKLiveFilter](https://www.github.com/SammaySarkar/XYAHKLiveFilter)
 http://www.xyplorer.com/xyfc/viewtopic.php?t=12588
 
-**version 4.1.0**
+**version 4.1.1**
 
-A live-filter plugin for [XYplorer](http://www.xyplorer.com), made with [AutoHotkey](http://www.ahkscript.org)
+A live-filter plugin for [XYplorer](http://www.xyplorer.com), made with [AutoHotkey](http://www.ahkscript.org)<br/>
 Live-filters the file list as you type into a textbox. Uses SC `filter`, so all its syntax is available.
 
 ###INSTALL:
@@ -32,7 +32,9 @@ Live-filters the file list as you type into a textbox. Uses SC `filter`, so all 
   to refocus main XY window. (ofcourse mouse can be used instead too.)<br/>
   See `$FocusHotkey` in the **OPTIONS** section below for more details.
 * Press <kbd>ESCAPE</kbd> while the filterbox is focused to close it. (also quits automatically when parent XY window is closed.)
-* Live-filtering is not suitable for RegExp patterns. Check the **P** checkbox to pause livemode, enter complex/RegExp pattern, then uncheck it again to submit.
+* You might get pattern errors while entering complex/RegExp patterns. In that case, check the **P** checkbox to pause livemode,
+  type the pattern, then uncheck it again to submit.
+* Livemode can also be toggled with <kbd>ALT</kbd>+<kbd>P</kbd>.
 * You can press <kbd>ENTER</kbd> to force a filter update while livemode is paused.
 * Full content of the filterbox is passed to SC `filter` unchanged, so should be properly escaped according to XYplorer scripting rules when necessary.
 * If you use the script as a UDC with a keyboard shortcut, I suggest setting the same shortcut as `$FocusHotkey`.<br/>
@@ -46,7 +48,7 @@ Some options may be modified in the XYscript.
   It follows [Authotkey's hotkey definition syntax](http://ahkscript.org/docs/Hotkeys.htm).
 * `$SyncToAB`: if `$SyncToAB` is 1, the filterbox is positioned over right edge the of the addressbar.
   This also forces the AB to stay visible as long as livefilter is running, and reverts back to last state when the filter is closed.<br/>
-  If `$SyncToAB` is not 1, then the filterbox is positioned at the *topleft* of XY, and does not try to modify AB visibility.
+  If `$SyncToAB` is not 1, then the filterbox is positioned at the _topleft_ of XY, and does not try to modify AB visibility.
 * `$ABPadding`: Adjust this value only if the filterbox doesn't horizontal-align exactly with the addressbar.<br/>
   The value should be a (small) integer: 0,3,-2 etc.<br/>
   The filterbox moves up/down this many pixels. Only effective when `$SyncToAB = 1`.
@@ -61,7 +63,7 @@ Each of these variables may be set as empty, eg, `$FocusHotkey = "";`
   In any case, you can generate the exe yourself or directly run it as an ahk script.
 
 Well, that's about it.
-*Happy filtering!*
+_Happy filtering!_
 
 
 *I know the script can benefit from some improvements, bugfixes. All such help is welcome!*
