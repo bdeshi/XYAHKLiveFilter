@@ -1,0 +1,12 @@
+ //XYAHKLiveFilter v4.0.0
+ perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
+ if ($p_XYAHKLiveFilter_A != 1)||($p_XYAHKLiveFilter_B != <hwnd>){
+  $p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;
+
+  $FocusHotkey = "^`" ; //ex: ^`=CTRL+`, !+'=ALT+SHIFT+', !Space=ALT+SPACE
+  $SyncToAB = 1 ; //sync filterbox position with AB
+  $ABPadding = 5 ; //not effective if not $SyncToAB = 1
+
+  run trim(<<<#RuncmD
+  "<xyscripts>\XYAHKLiveFilter.exe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB"#RuncmD,"  ",L),, 0;
+ }
