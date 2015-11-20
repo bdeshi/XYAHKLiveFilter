@@ -6,7 +6,7 @@ A live-filter plugin for [XYplorer](http://www.xyplorer.com), made with [AutoHot
 Live-filters the file list as you type into a textbox. Uses SC `filter`, so all its syntax is available.
 
 ###INSTALL:
-* Download and extract the release archive. Or clone this repo and compile the ahk.
+* Download and extract the [release archive](/../../releases). Or clone this repo and compile the [ahk](/XYAHKLiveFilter.ahk).
 * Place `XYAHKLiveFilter.exe` in the `<xyscripts>` folder.
 * Next attach the following xyscript to a CTB and/or to a UDC item (it's also available as [`XYAHKLiveFilter.xys`](/XYAHKLiveFilter.xys)).
 ```php

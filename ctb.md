@@ -1,4 +1,4 @@
-[`XYAHKLiveFilter.CTB.xys`](/XYAHKLiveFilter.CTB.xys) provides tighter CTB integration.
+[`XYAHKLiveFilter.CTB.xys`](/XYAHKLiveFilter.ctb.xys) provides tighter CTB integration.
 * Add a new CTB with this snippet:
 ```
 Snip: CTB 1
