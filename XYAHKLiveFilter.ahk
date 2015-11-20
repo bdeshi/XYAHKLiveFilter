@@ -21,16 +21,16 @@ OwnCTB		= %5%					;ID of associated custom toolbar button in XY (>= 0)
 ShowTip		= %6%					;show (once) or disable tooltip
 ABPadding  := (ABPadding+0 = "") ? 5 : ABPadding ;default ABPadding = 5
 
-OnExit, ExitRoutine					;need to cleanup before exit
 OnMessage(0x4a, "MsgFromXY")		;WM_COPYDATA
-;OnMessage(0x200, "FocusGUI")		;WM_MOUSEMOVE
+;OnMessage(0x200, "FocusGUI")		;WM_MOUSEMOVE | disabled, non-standard
+OnExit, ExitRoutine					;need to cleanup before exit
 OnMessage(0x7e, "Destroyer")		;WM_DESTROY
 
 ;setup GUI
 Gui, +HwndGUIhWnd -Border -Caption +OwnDialogs +AlwaysOnTop
 	Gui, Margin, 1, 1
 	If (SyncPos = 1)		;GUI should match ab position
-		Gosub, ABattribs
+		GoSub, ABattribs
 	Else {					;else place GUI at topleft of XY clientarea
 		GUIX	 = 1
 		GUIY	 = 1
@@ -63,6 +63,7 @@ Hotkey, IfWinActive, ahk_id %GUIhWnd%
 	Hotkey, Tab, lblFocusXY					;tab to give focus to XY
 	Hotkey, Enter, UpdateFilter				;ENTER to force filter update
 	Hotkey, !p, lblTogglePause				;alt+p to toggle pause status
+	;escape key closes GUI by GuiEscape label
 Return
 ;=== END OF AUTO-EXECUTION SECTION =============================================
 
@@ -150,7 +151,7 @@ Return
 ;handle escape routes
 GuiClose:
 GuiEscape:
-	GoSub,ExitRoutine
+	ExitApp
 Return
 ;focus parent XY window
 lblFocusXY:
@@ -249,11 +250,14 @@ GetFont(arg_hwnd) {
 ;cleanup filter and perms on exit. Triggered on "normal" script/GUI exit
 ExitRoutine:
 	GUI, Hide				;exiting "looks" slightly faster
-	If (SyncPos = 1)		;revert AB visibility to pre-exec
-		MsgToXY("::setlayout('showaddressbar=" ABState "');")
-	;make and send cleanup script
-	endMsg := "::filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;"
+	If WinExist("ahk_id " . XYhWnd) {
+		If (SyncPos = 1)		;revert AB visibility to pre-exec
+			MsgToXY("::setlayout('showaddressbar=" ABState "');")
+		;make and send cleanup script
+		endMsg := "::filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;"
 				. ((OwnCTB > -1) ? "ctbstate(0, " OwnCTB ")" : "") . ";"
-	MsgToXY(endMsg)
+		MsgToXY(endMsg)
+		WinActivate, ahk_id %XYhWnd%
+	}
 	ExitApp
 Return
