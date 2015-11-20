@@ -1,4 +1,4 @@
-;XYAHKLiveFilter.ahk/v4.1.1/author:SammaySarkar
+;XYAHKLiveFilter.ahk/v4.1.2/author:SammaySarkar
 ;http://xyplorer.com/xyfc/viewtopic.php?t=12588
 
 #SingleInstance, Off				;multiple instances can run for multiple XY instances
@@ -16,7 +16,8 @@ XYhWnd		= %1%
 Shortcut	= %2%					;hotkey to focus filterbox
 ABPadding	= %3%					;manual adjustent of GUI Y (for same Y of AB)
 SyncPos		= %4%					;sync GUI position with AB (else at the topleft of XY)
-ShowTip		= %5%					;show (once) or disable tooltip
+OwnCTB		= %5%					;ID of associated custom toolbar button in XY (>= 0)
+ShowTip		= %6%					;show (once) or disable tooltip
 ABPadding  := (ABPadding+0 = "") ? 5 : ABPadding ;default ABPadding = 5
 
 OnExit, ExitRoutine					;need to cleanup before exit
@@ -251,6 +252,7 @@ ExitRoutine:
 		MsgToXY("::setlayout('showaddressbar=" ABState "');")
 	;make and send cleanup script
 	endMsg := "::filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;"
+				. ((OwnCTB > -1) ? "ctbstate(0, " OwnCTB ")" : "") . ";"
 	MsgToXY(endMsg)
 	ExitApp
 Return

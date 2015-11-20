@@ -1,15 +1,13 @@
 ## [XYAHKLiveFilter](https://www.github.com/SammaySarkar/XYAHKLiveFilter)
 http://www.xyplorer.com/xyfc/viewtopic.php?t=12588
 
-**version 4.1.1**
-
 A live-filter plugin for [XYplorer](http://www.xyplorer.com), made with [AutoHotkey](http://www.ahkscript.org)<br/>
 Live-filters the file list as you type into a textbox. Uses SC `filter`, so all its syntax is available.
 
 ###INSTALL:
 * Download and extract the release archive. Or clone this repo and compile the ahk.
 * Place **XYAHKLiveFilter.exe** in the `<xyscripts>` folder.
-* Next attach the following xyscript to a CTB and/or to a UDC item (it's also available as `XYAHKLiveFilter.xys`).
+* Next attach the following xyscript to a CTB and/or to a UDC item (it's also available as [`XYAHKLiveFilter.xys`](/XYAHKLiveFilter.xys)).
 ```
  perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
  if ($p_XYAHKLiveFilter_A != 1)||($p_XYAHKLiveFilter_B != <hwnd>){
@@ -22,15 +20,16 @@ Live-filters the file list as you type into a textbox. Uses SC `filter`, so all 
  }
 ```
 * That's it! Now just click the CTB or trigger the UDC and filter away! (Don't forget to read about usage & options below.)
-* (Don't forget to modify the path in that script to match the actual path of the exe.
-  Also you can modify it even further to run the source ahk itself via the AutoHotkey interpreter.)
+* Don't forget to modify the path in that script to match the actual path of the exe.
+  Also you can modify it even further to run the source ahk itself via the AutoHotkey interpreter.
+* See [ctb.md](/ctb.md) to learn about better CTB integration.
 
 ###USAGE:
 * By default, the filterbox pops up and stays over the right edge of the AB (addressbar), enabling AB if needed.<br/>
-  See `$SyncToAB` in the **OPTIONS** section below for more details.
+  See `$SyncToAB` in [**OPTIONS**](#options) below for more details.
 * Press the focus hotkey (default:<kbd>CTRL</kbd>+<kbd>\`</kbd>) to focus the filterbox and <kbd>TAB</kbd>
   to refocus main XY window. (ofcourse mouse can be used instead too.)<br/>
-  See `$FocusHotkey` in the **OPTIONS** section below for more details.
+  See `$FocusHotkey` in [**OPTIONS**](#options) below for more details.
 * Press <kbd>ESCAPE</kbd> while the filterbox is focused to close it. (also quits automatically when parent XY window is closed.)
 * You might get pattern errors while entering complex/RegExp patterns. In that case, check the **P** checkbox to pause livemode,
   type the pattern, then uncheck it again to submit.
