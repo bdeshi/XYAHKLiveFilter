@@ -1,56 +1,70 @@
-;XYAHKLiveFilter v2
+;XYAHKLiveFilter v3
 #SingleInstance, Off
 OnExit, ExitRoutine
 SetControlDelay, -1
 XYhWnd = %1%
 Shortcut = %2%
-
 Main:
-	Gui, +HwndGUIhWnd +OwnDialogs -Resize -Border -Caption +AlwaysOnTop
-	Gui, Margin, 0, 0
+	Gui, +HwndGUIhWnd  -Resize -Border -Caption +OwnDialogs +AlwaysOnTop
+	Gui, Margin, 1, 1
 	Gui, Font, s8, Segoe UI
-	Gui, Add, Edit, R1 vXYAHKFilter gUpdateFilter hWndGUIEdithWnd, ""
-	DllCall("SetParent", "UInt",GUIhWnd, "UInt",XYhWnd)
+	GUI, Add, Checkbox, gUpdateFilter hWndGUIPausehWnd 0x8000 0xc00, P
+	Gui, Add, Edit, y1 gUpdateFilter hWndGUIEdithWnd R1, ""
+	DllCall("SetParent","UInt", GUIhWnd, "UInt", XYhWnd)
 	GuiControlGet, EditPos, Pos, %GUIEdithWnd%
 	GuiControl, Move, %GUIEdithWnd%, % "w" EditPosW*8
+	GuiControl, Move, %GUIPausehWnd%, % "h" EditPosH
 	Gui, Show, X1 Y1 AutoSize
-	SendInput, {Left}
+	SendInput, {Right}{Left}
 	OnMessage(0x200, "FocusGUI")
 	OnMessage(0x02, "Destroyer")
 	Hotkey, IfWinActive, ahk_id %GUIhWnd%
-	Hotkey, Tab, LabelFocusXY
+		Hotkey, Tab, lblFocusXY
 	If (Shortcut) {
 		Hotkey, IfWinActive, ahk_id %XYhWnd%
-		Hotkey, %Shortcut%, LabelFocusGUI
+			Hotkey, %Shortcut%, lblFocusGUI
 	}
 Return
 
 UpdateFilter:
-	GuiControlGet, XYAHKLiveFilter, , %GUIEdithWnd%
-	XYAHKLiveFilter = ::filter %XYAHKLiveFilter%;
-	MsgToXY(XYAHKLiveFilter)
+	GuiControlGet, PauseState, , %GUIPausehWnd%
+	GuiControlGet, StrFilter, , %GUIEdithWnd%
+	If (PauseState = 1) {
+		Return
+	}
+	If (StrFilterLast != StrFilter) {
+		StrFilterLast := StrFilter
+		StrFilter = ::filter %StrFilter%;
+		MsgToXY(StrFilter)
+		StrFilter := ""
+	}
 Return
 
+GuiClose:
 GuiEscape:
 	GoSub, ExitRoutine
 Return
-GuiClose:
-	GoSub, ExitRoutine
-Return
 
-LabelFocusXY:
-	WinActivate, ahk_id %XYhWnd%
+lblFocusXY:
+	FocusXY()
 Return
-LabelFocusGUI:
+lblFocusGUI:
 	FocusGUI()
 Return
 
 FocusGUI() {
-	global XYhWnd
+	global
 	IfWinActive, ahk_id %XYhWnd%
 	{
-		Gui, +LastFound
-		WinActivate
+		WinActivate, ahk_id %GUIEdithWnd%
+	}
+	Return
+}
+FocusXY() {
+	global
+	IfWinActive, ahk_id %GUIhWnd%
+	{
+		WinActivate, ahk_id %XYhWnd%
 	}
 	Return
 }
@@ -64,8 +78,8 @@ MsgToXY(arg_Msg) {
 	global XYhWnd
 	Size := StrLen(arg_Msg)
 	If !(A_IsUnicode) {
-	VarSetCapacity(Data, Size * 2, 0)
-	StrPut(arg_Msg, &Data, Size, "UTF-16")
+		VarSetCapacity(Data, Size * 2, 0)
+		StrPut(arg_Msg, &Data, Size, "UTF-16")
 	} Else {
 		Data := arg_Msg
 	}
@@ -78,8 +92,9 @@ MsgToXY(arg_Msg) {
 }
 
 ExitRoutine:
+	GUI, Destroy
+	WinActivate, ahk_id %XYhWnd%
 	EndMsg := "::filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;"
 	MsgToXY(EndMsg)
-	WinActivate, ahk_id %XYhWnd%
 	ExitApp
 Return

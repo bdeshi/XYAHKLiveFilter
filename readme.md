@@ -1,7 +1,7 @@
 ## [XYAHKLiveFilter](https://www.github.com/SammaySarkar/XYAHKLiveFilter)
 http://www.xyplorer.com/xyfc/viewtopic.php?t=12588
 
-####**version 2**
+####**version 3**
 
 A live-filter plugin for [XYplorer](http://www.xyplorer.com), made in [AutoHotkey](http://www.ahkscript.org)
 Live-filters the file list as you type into a textbox. Uses SC `filter`, so all its syntax is available.
@@ -27,7 +27,7 @@ Live-filters the file list as you type into a textbox. Uses SC `filter`, so all 
 * Press <kbd>ESCAPE</kbd> while the filterbox is focused to close it. (also quits automatically when parent XY window is closed.)
 * If you use the script as a UDC with a keyboard shortcut, I suggest setting the same shortcut as Focus Hotkey.
 * Full content of the filterbox is passed to SC `filter` unchanged, so should be properly escaped according to XYplorer scripting rules when necessary.
-* Live-filtering is not suitable for RegExp patterns. You run the risk of getting bombarded with pattern error message.
+* Live-filtering is not suitable for RegExp patterns. Activate the **P** checkbox to pause livemode, enter complex/RegExp pattern, then uncheck it again to submit.
 
 
 ###IMPORTANT:
