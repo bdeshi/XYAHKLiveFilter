@@ -1,4 +1,4 @@
-[`XYAHKLiveFilter.ctb.xys`](/XYAHKLiveFilter.ctb.xys) provides tighter CTB integration.
+[`XYAHKLiveFilter.CTB.xys`](/XYAHKLiveFilter.CTB.xys) provides tighter CTB integration.
 * Add a new CTB with this snippet:
 ```
 Snip: CTB 1
@@ -13,7 +13,7 @@ Name
 Icon
   
 ScriptL
-  if isset($p_XYAHKLiveFilter_A){sendkeys "^`";/*Ensure this matches associated shortcut!*/} else {load "<xyscripts>\XYAHKLiveFilter.ctb.xys";}
+  if isset($p_XYAHKLiveFilter_A){sendkeys "^`";/*Ensure this matches associated shortcut!*/} else {load "<xyscripts>\XYAHKLiveFilter.CTB.xys";}
 ScriptR
   "reset"
    filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;ctbstate(0);
