@@ -1,6 +1,8 @@
 ;XYAHKLiveFilter.ahk/v4.1.2/author:SammaySarkar
 ;http://xyplorer.com/xyfc/viewtopic.php?t=12588
 
+;HACK compile/run with AHK v1.1.22.04
+
 #SingleInstance, Off				;multiple instances can run for multiple XY instances
 #NoTrayIcon							;hide tray icon
 #NoEnv								;(recommended)
