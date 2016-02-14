@@ -1,8 +1,8 @@
 ## XYAHKLiveFilter
-[forum](http://www.xyplorer.com/xyfc/viewtopic.php?t=12588)|[source](https://www.github.com/SammaySarkar/XYAHKLiveFilter) | 
-[releases](https://www.github.com/SammaySarkar/XYAHKLiveFilter/releases)|[bugreport](https://www.github.com/SammaySarkar/XYAHKLiveFilter/issues)<br/>
+[forum](http://www.xyplorer.com/xyfc/viewtopic.php?t=12588)|[source](https://www.github.com/smsrkr/XYAHKLiveFilter) | 
+[releases](https://www.github.com/smsrkr/XYAHKLiveFilter/releases)|[bugreport](https://www.github.com/smsrkr/XYAHKLiveFilter/issues)<br/>
 
-A live-filter plugin for [XYplorer](http://www.xyplorer.com), made with [AutoHotkey](http://www.ahkscript.org)<br/>
+A live-filter plugin for [XYplorer](http://www.xyplorer.com), made with [AutoHotkey](https://autohotkey.com)<br/>
 Live-filters the file list as you type into a textbox. Uses SC `filter`, so all its syntax is available.
 
 ###INSTALL:
@@ -44,8 +44,8 @@ Live-filters the file list as you type into a textbox. Uses SC `filter`, so all 
 
 ###OPTIONS:
 Some options may be modified in the XYscript.
-* `$FocusHotkey`: this value is passed as the shortcut code to instantly focus the filterbox. The default value `^\`` means <kbd>CTRL</kbd>+<kbd>\`</kbd>.<br/>
-  It follows [Authotkey's hotkey definition syntax](http://ahkscript.org/docs/Hotkeys.htm).
+* `$FocusHotkey`: this value is passed as the shortcut code to instantly focus the filterbox. The default value <tt>^\`</tt> means <kbd>CTRL</kbd>+<kbd>\`</kbd>.<br/>
+  It follows [Authotkey's hotkey definition syntax](https://autohotkey.com/docs/Hotkeys.htm).
 * `$SyncToAB`: if `$SyncToAB` is 1, the filterbox is positioned over right edge the of the addressbar.
   This also forces the AB to stay visible as long as livefilter is running, and reverts back to last state when the filter is closed.<br/>
   If `$SyncToAB` is not 1, then the filterbox is positioned at the _topleft_ of XY, and does not try to modify AB visibility.
@@ -59,11 +59,8 @@ Each of these variables may be set as empty, eg, `$FocusHotkey = "";`
 * To work correctly, the exe/ahk must be launched from within XY as directed in INSTALL section.
 * If the filterbox doesn't open, delete/unset the permanent variables `$p_XYAHKLiveFilter_A`,`$p_XYAHKLiveFilter_B` and try again.
 * May also fail to run if an invalid hotkey string is supplied in `$FocusHotkey`.
-* Some AntiMalware suites apparently flag compiled ahk scripts as infected, which is a false alarm.
+* Some anti-malware suites apparently flag compiled ahk scripts as infected, which is a false alarm.
   In any case, you can generate the exe yourself or directly run it as an ahk script.
 
 Well, that's about it.
 _Happy filtering!_
-
-
-*I know the script can benefit from some improvements, bugfixes. All such help is welcome!*
