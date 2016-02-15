@@ -16,6 +16,7 @@ Global GUIEdithWnd, GUIPausehWnd	;holds gui elements hwnd
 Global XYhWnd						;parent/target XY window hwnd in base10
 ;retrieve vars from cmdline
 XYhWnd		= %1%
+;XYhWndHex	= Format("0x{:x}", XYhWnd)
 Shortcut	= %2%					;hotkey to focus filterbox
 ABPadding	= %3%					;manual adjustent of GUI Y (for same Y of AB)
 SyncPos		= %4%					;sync GUI position with AB (else at the topleft of XY)
@@ -34,15 +35,16 @@ Gui, +HwndGUIhWnd -Border -Caption +OwnDialogs +AlwaysOnTop
 	If (SyncPos = 1)		;GUI should match ab position
 		GoSub, ABattribs
 	Else {					;else place GUI at topleft of XY clientarea
-		GUIX	 = 1
-		GUIY	 = 1
-		FontName = Segoe UI
-		FontSize = 8
+		GUIX	 := 1
+		GUIY	 := 1
+		FontName := "Segoe UI"
+		FontSize := 8
 	}
 	Gui, Font, s%FontSize%, %FontName%
 	GUI, Add, Checkbox, gCallUpdateFilter hWndGUIPausehWnd 0xc00, P	;pause checkbox
 	Gui, Add, Edit, y1 gCallUpdateFilter hWndGUIEdithWnd R1, ""		;the filterbox
-	DllCall("SetParent", "UInt",GUIhWnd, "UInt",XYhWnd)				;set as child of XY
+	;set as child of XY
+	DllCall("SetParent", "Ptr", GUIhWnd, "Ptr", Format("0x{:x}", XYhWnd), "Ptr")
 	GuiControlGet, EditPos, Pos, %GUIEdithWnd%
 	GuiControl, Move, %GUIEdithWnd%, % "w" EditPosW*8				;set a sane width
 	GuiControl, Move, %GUIPausehWnd%, % "h" EditPosH				;chkbox H==edit H
