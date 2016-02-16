@@ -24,10 +24,10 @@ OwnCTB		= %5%					;ID of associated custom toolbar button in XY (>= 0)
 ShowTip		= %6%					;show (once) or disable tooltip
 ABPadding  := (ABPadding+0 = "") ? 5 : ABPadding ;default ABPadding = 5
 
+OnExit, ExitRoutine					;need to cleanup before exit
 OnMessage(0x4a, "MsgFromXY")		;WM_COPYDATA
 ;OnMessage(0x200, "FocusGUI")		;WM_MOUSEMOVE | disabled, non-standard
-OnExit, ExitRoutine					;need to cleanup before exit
-OnMessage(0x7e, "Destroyer")		;WM_DESTROY
+OnMessage(0x02, "Destroyer")		;WM_DESTROY
 
 ;setup GUI
 Gui, +HwndGUIhWnd -Border -Caption +OwnDialogs +AlwaysOnTop
@@ -255,13 +255,14 @@ GetFont(arg_hwnd) {
 ExitRoutine:
 	GUI, Hide				;exiting "looks" slightly faster
 	If WinExist("ahk_id " . XYhWnd) {
-		If (SyncPos = 1)		;revert AB visibility to pre-exec
+		WinActivate, ahk_id %XYhWnd%	;reactivate parent
+		If (SyncPos = 1)
+			;revert AB visibility to pre-exec
 			MsgToXY("::setlayout('showaddressbar=" ABState "');")
 		;make and send cleanup script
 		endMsg := "::filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;"
 				. ((OwnCTB > -1) ? "ctbstate(0, " OwnCTB ")" : "") . ";"
 		MsgToXY(endMsg)
-		WinActivate, ahk_id %XYhWnd%
 	}
 	ExitApp
 Return
