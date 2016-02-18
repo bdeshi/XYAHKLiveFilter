@@ -1,7 +1,6 @@
-REM compile with AHK v <default>: set ver=""
-REM compile with AHK v 1.1.22.04: set ver="112204\"
-REM    that version is located in AutoHotkey\112204\
-setlocal
-set ahkver=112204\
-"%PROGS%\AutoHotkey\%ahkver%Compiler\Ahk2Exe.exe" /in ".\XYAHKLiveFilter.ahk" /out ".\XYAHKLiveFilter.exe" /icon ".\XYAHKLiveFilter.ico"
-endlocal
+REM compile with AHK v <default>: set ahkv=""
+REM compile with AHK v 1.1.22.04: set ahkv="112204\"
+SETLOCAL
+SET ahkv=
+"%PROGS%\AutoHotkey\%ahkv%Compiler\Ahk2Exe.exe" /in ".\XYAHKLiveFilter.ahk" /icon ".\XYAHKLiveFilter.ico"
+ENDLOCAL

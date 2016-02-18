@@ -57,8 +57,6 @@ Each of these variables may be set as empty, eg, `$FocusHotkey = "";`
 
 ###IMPORTANT:
 * To work correctly, the exe/ahk must be launched from within XY as directed in INSTALL section.
-* :warning: _Until [this issue](../../issues/1) is closed, please compile or run the script with [AutoHotkey v 1.1.22.04]
-  (https://github.com/Lexikos/AutoHotkey_L/releases/tag/v1.1.22.04)._
 * If the filterbox doesn't open, delete/unset the permanent variables `$p_XYAHKLiveFilter_A`,`$p_XYAHKLiveFilter_B` and try again.
 * May also fail to run if an invalid hotkey string is supplied in `$FocusHotkey`.
 * Some anti-malware suites apparently flag compiled ahk scripts as infected, which is a false alarm.
