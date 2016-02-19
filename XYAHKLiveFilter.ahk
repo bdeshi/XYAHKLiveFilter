@@ -11,21 +11,24 @@ Global AHKhWnd := A_ScriptHwnd + 0	;own hwnd in base10, can pass to SC copydata
 Global ReceivedData					;holds WM_COPYDATA return (temporarily)
 Global GUIhWnd						;holds gui hwnd
 Global GUIEdithWnd, GUIPausehWnd	;holds gui elements hwnd
-Global XYhWnd						;parent/target XY window hwnd in base10
-;retrieve vars from cmdline
+Global XYhWnd						;parent/target XY window hwnd
+
+;process XY hwnd from cmdline
 XYhWnd		= %1%
-;XYhWndHex	= Format("0x{:x}", XYhWnd)
+XYhWnd		:= Format("0x{:x}", XYhWnd) ;convert to hex, like GUIhWnd
+
+;retrieve other options from cmdline
 Shortcut	= %2%					;hotkey to focus filterbox
 ABPadding	= %3%					;manual adjustent of GUI Y (for same Y of AB)
 SyncPos		= %4%					;sync GUI position with AB (else at the topleft of XY)
 OwnCTB		= %5%					;ID of associated custom toolbar button in XY (>= 0)
 ShowTip		= %6%					;show (once) or disable tooltip
-ABPadding  := (ABPadding+0 = "") ? 5 : ABPadding ;default ABPadding = 5
+ABPadding	:= (ABPadding+0 = "") ? 5 : ABPadding
 
 OnExit, ExitRoutine					;need to cleanup before exit
 OnMessage(0x4a, "MsgFromXY")		;WM_COPYDATA
-;OnMessage(0x200, "FocusGUI")		;WM_MOUSEMOVE | disabled, non-standard
 OnMessage(0x02, "Destroyer")		;WM_DESTROY
+;OnMessage(0x200, "FocusGUI")		;WM_MOUSEMOVE | disabled, non-standard
 
 ;setup GUI
 Gui, +HwndGUIhWnd -Border -Caption +OwnDialogs +AlwaysOnTop
@@ -42,7 +45,7 @@ Gui, +HwndGUIhWnd -Border -Caption +OwnDialogs +AlwaysOnTop
 	GUI, Add, Checkbox, gCallUpdateFilter hWndGUIPausehWnd 0xc00, P	;pause checkbox
 	Gui, Add, Edit, y1 gCallUpdateFilter hWndGUIEdithWnd R1, ""		;the filterbox
 	;set as child of XY
-	DllCall("SetParent", "Ptr", GUIhWnd, "Ptr", Format("0x{:x}", XYhWnd), "Ptr")
+	DllCall("SetParent", "Ptr", GUIhWnd, "Ptr", XYhWnd, "Ptr")
 	GuiControlGet, EditPos, Pos, %GUIEdithWnd%
 	GuiControl, Move, %GUIEdithWnd%, % "w" EditPosW*8				;set a sane width
 	GuiControl, Move, %GUIPausehWnd%, % "h" EditPosH				;chkbox H==edit H
