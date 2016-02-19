@@ -47,7 +47,7 @@ Some options may be modified in the XYscript.
   It follows [Authotkey's hotkey definition syntax](https://autohotkey.com/docs/Hotkeys.htm).
 * `$SyncToAB`: if `$SyncToAB` is 1, the filterbox is positioned over right edge the of the addressbar.
   This also forces the AB to stay visible as long as livefilter is running, and reverts back to last state when the filter is closed.<br/>
-  If `$SyncToAB` is not 1, then the filterbox is positioned at the _topleft_ of XY, and does not try to modify AB visibility.
+  If `$SyncToAB` is not 1, then the filterbox is pops up and stays at the _topright_ of XY, and does not try to modify AB visibility.
 * `$ABPadding`: Adjust this value only if the filterbox doesn't horizontal-align exactly with the addressbar.<br/>
   The value should be a (small) integer: 0,3,-2 etc.<br/>
   The filterbox moves up/down this many pixels. Only effective when `$SyncToAB = 1`.
