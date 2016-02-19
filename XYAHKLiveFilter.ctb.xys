@@ -1,32 +1,34 @@
-	$XYAHKLiveFilterExe = "<xyscripts>\XYAHKLiveFilter.exe";
-	//$XYAHKLiveFilerExe = "path\to\autohotkey.exe"" ""<xyscripts>\XYAHKLiveFilter.ahk";
-	$XYAHKLiveFilterIco = "<xyscripts>\XYAHKLiveFilter.ico";
+ //XYAHKLiveFilter.ctb/v4.2.0//author:SammaySarkar
+ //http://xyplorer.com/xyfc/viewtopic.php?&t=12588
+ $XYAHKLiveFilterExe = "<xyscripts>\XYAHKLiveFilter.exe";
+ //$XYAHKLiveFilerExe = "path\to\autohotkey.exe"" ""<xyscripts>\XYAHKLiveFilter.ahk";
+ $XYAHKLiveFilterIco = "<xyscripts>\XYAHKLiveFilter.ico";
 
-	//ctb index when a ctb is associated with XYAHKLiveFilter. The script can control it's pressed state
-	//Set to any value less than 0 (eg -1) to disable, when a ctb is not associated
-	$CTB = 0; //<get trigger ctbindex>;
+ //ctb index when a ctb is associated with XYAHKLiveFilter. The script can control it's pressed state
+ //Set to any value less than 0 (eg -1) to disable, when a ctb is not associated
+ $CTB = 0; //<get trigger ctbindex>;
 
 
-	if ($CTB >= 0){ctbicon($XYAHKLiveFilterIco, $CTB);}
+ if ($CTB >= 0){ctbicon($XYAHKLiveFilterIco, $CTB);}
 
-	perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
-	if ($p_XYAHKLiveFilter_A != 1)||($p_XYAHKLiveFilter_B != <hwnd>) {
-		$p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;
-		if ($CTB >= 0){ctbstate(1, $CTB);} //set pressed state
+ perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
+ if ($p_XYAHKLiveFilter_A != 1)||($p_XYAHKLiveFilter_B != <hwnd>) {
+  $p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;
+  if ($CTB >= 0){ctbstate(1, $CTB);} //set pressed state
 
-		//following variables are filterbox arguments (each of them can be empty)
-		//$FocusHotkey: keyboard shortcut to focus filterbox. ^` = CTRL+`, !+' = ALT+SHIFT+', !Space = ALT+SPACE
-		//Tab, Enter and Alt+P are reserved, please use some other shortcut
-		$FocusHotkey = "^`" ;
-		//$SyncToAB=1: Keep filterbox position in sync with addressbar (force-enables addressbar)
-		//any other value makes the filterbox popup at the topleft corner (doesn't force addressbar)
-		$SyncToAB = 1 ;
-		//$ABPadding: Y-axis position adjustment (in pixels) for filterbox. Use a (small) number: 0,4,-3 etc
-		//this should be modified only if filterbox top margin doesn't match addressbar's. No effect if $SyncToAB != 1
-		$ABPadding = 5 ;
+  //following variables are filterbox arguments (each of them can be empty)
+  //$FocusHotkey: keyboard shortcut to focus filterbox. ^` = CTRL+`, !+' = ALT+SHIFT+', !Space = ALT+SPACE
+  //Tab, Enter and Alt+P are reserved, please use some other shortcut
+  $FocusHotkey = "^`" ;
+  //$SyncToAB=1: Keep filterbox position in sync with addressbar (force-enables addressbar)
+  //any other value makes the filterbox popup at the topleft corner (doesn't force addressbar)
+  $SyncToAB = 1 ;
+  //$ABPadding: Y-axis position adjustment (in pixels) for filterbox. Use a (small) number: 0,4,-3 etc
+  //this should be modified only if filterbox top margin doesn't match addressbar's. No effect if $SyncToAB != 1
+  $ABPadding = 5 ;
 
-		run """$XYAHKLiveFilterExe"" ""<hwnd>"" ""$FocusHotkey"" ""$ABPadding"" ""$SyncToAB"" ""$CTB""",, 0;
-	}
-	else {
-		if ($CTB >= 0){ctbstate(0, $CTB);} //set pressed state
-	}
+  run """$XYAHKLiveFilterExe"" ""<hwnd>"" ""$FocusHotkey"" ""$ABPadding"" ""$SyncToAB"" ""$CTB""",, 0;
+ }
+ else {
+  if ($CTB >= 0){ctbstate(0, $CTB);} //set pressed state
+ }

@@ -13,16 +13,16 @@ Name
 Icon
   
 ScriptL
-  if isset($p_XYAHKLiveFilter_A){sendkeys "^`";/*Ensure this matches associated shortcut!*/} else {load "<xyscripts>\XYAHKLiveFilter.CTB.xys";}
+  $FocusHotkey = "^`" ;/*Ensure this matches associated shortcut!*/ if isset($p_XYAHKLiveFilter_A){sendkeys $FocusHotkey;} else {load "<xyscripts>\XYAHKLiveFilter.CTB.xys";}
 ScriptR
   "reset"
    filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;ctbstate(0);
   "edit"
-   open "<xyscripts>\XYAHKLiveFilter.xys";
+   openwith "notepad",, "<xyscripts>\XYAHKLiveFilter.xys";
 FireClick
   0
 ```
-* (make sure the paths and the sendkey shortcut are correct.)
+* Make sure the _paths_ and the `$FocusHotkey` value are correct.
 * Open the CTB editor and note the CTB index.
 * Insert this index into XYAHKLiveFilter.ctb.xys as the value of $CTB.
 * Now the ctb will toggle on and run XYAHKLiveFilter, and XYAHKLiveFilter will toggle it off when quitting.

@@ -22,14 +22,13 @@ Live-filters the file list as you type into a textbox. Uses SC `filter`, so all 
 ```
 * That's it! Now just click the CTB or trigger the UDC and filter away! (Don't forget to read about usage & options below.)
 * Don't forget to modify the path in that script to match the actual path of the exe.
-  Also you can modify it even further to run the source ahk itself via the AutoHotkey interpreter.
 * See [ctb.md](/ctb.md) to learn about better CTB integration.
 
 ###USAGE:
 * By default, the filterbox pops up and stays over the right edge of the AB (addressbar), enabling AB if needed.<br/>
   See `$SyncToAB` in [**OPTIONS**](#options) below for more details.
 * Press the focus hotkey (default:<kbd>CTRL</kbd>+<kbd>\`</kbd>) to focus the filterbox and <kbd>TAB</kbd>
-  to refocus main XY window. (ofcourse mouse can be used instead too.)<br/>
+  to refocus main XY window. (of course mouse can be used instead too.)<br/>
   See `$FocusHotkey` in [**OPTIONS**](#options) below for more details.
 * Press <kbd>ESCAPE</kbd> while the filterbox is focused to close it. (also quits automatically when parent XY window is closed.)
 * You might get pattern errors while entering complex/RegExp patterns. In that case, check the **P** checkbox to pause livemode,
@@ -57,7 +56,7 @@ Each of these variables may be set as empty, eg, `$FocusHotkey = "";`
 
 ###IMPORTANT:
 * To work correctly, the exe/ahk must be launched from within XY as directed in INSTALL section.
-* If the filterbox doesn't open, delete/unset the permanent variables `$p_XYAHKLiveFilter_A`,`$p_XYAHKLiveFilter_B` and try again.
+* If the filterbox doesn't open, unset the permanent variables `$p_XYAHKLiveFilter_A`,`$p_XYAHKLiveFilter_B` and try again.
 * May also fail to run if an invalid hotkey string is supplied in `$FocusHotkey`.
 * Some anti-malware suites apparently flag compiled ahk scripts as infected, which is a false alarm.
   In any case, you can generate the exe yourself or directly run it as an ahk script.
