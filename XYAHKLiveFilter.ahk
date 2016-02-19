@@ -32,9 +32,10 @@ OnMessage(0x02, "Destroyer")		;WM_DESTROY
 
 ;setup GUI
 Gui, +HwndGUIhWnd -Border -Caption +OwnDialogs +AlwaysOnTop
-	Gui, Margin, 1, 1
-	If (SyncPos = 1)		;GUI should match ab position
-		GoSub, ABattribs
+	Gui, Margin, 2, 1
+	GoSub, Sysdims			;get some system element dims for positioning
+	If (SyncPos = 1)		;right-align with AB
+		GoSub, ABdims
 	Else {					;else place GUI at topleft of XY clientarea
 		GUIX	 := 1
 		GUIY	 := 1
@@ -52,15 +53,16 @@ Gui, +HwndGUIhWnd -Border -Caption +OwnDialogs +AlwaysOnTop
 	Gui, Show, X%GUIX% Y%GUIY% AutoSize
 	SendInput, {Right}{Left}										;put cursor between default quotes
 
-;setup hotkeys
-If (SyncPos = 1){								;right align filterbox with AB
+;setup position
+If (SyncPos = 1) {								;right align filterbox with AB
 	WinGetPos,,, GUIW,, ahk_id %GUIhWnd%		;get current width
 	GUIX := ABX + ABW - xborder - GUIW			;get real abwidth - GUIWidth
 	WinMove, ahk_id %GUIhWnd%,, %GUIX%, %GUIY%	;set new position
-	SetTimer, UpdatePos, 100					;turn on the position synchronizer
+	SetTimer, UpdatePosAB, 100					;turn on the position synchronizer
 }
 
-If (Shortcut){								;put this first to override any other
+;setup hotkeys
+If (Shortcut) {								;put this first to override any other
 	Hotkey, IfWinActive, ahk_id %XYhWnd%	;trigger only when parent XY active
 		Hotkey, %Shortcut%, lblFocusGUI		;hotkey to refocus filterbox
 }
@@ -72,8 +74,8 @@ Hotkey, IfWinActive, ahk_id %GUIhWnd%
 Return
 ;=== END OF AUTO-EXECUTION SECTION =============================================
 
-;obtain AddressBar attributes, called only if SyncPos=1
-ABattribs:
+;obtain necessary AddressBar attributes, called only if SyncPos=1
+ABdims:
 	;ensure AB is visible 
 	MsgToXy("::copydata " AHKhWnd ",get('#660'),0;setlayout('showaddressbar=1');")
 		;^get(#660) AB visibility (returns 1||0)
@@ -83,33 +85,35 @@ ABattribs:
 	ControlGet, XYABhWnd, Hwnd,, Edit16, ahk_id %XYhWnd%
 	;^Edit16 isn't a static identifier either, fingers crossed ... 
 	ControlGetPos, ABX, ABY, ABW, ABH,, ahk_id %XYABhWnd%
+	GUIX	 := ABX + ABW - xborder	;GUIWidth is accounted for after GUI,Show
+	GUIY	 := ABY - yborder - CaptionH - MenuH - ABPadding
+	FontName := GetFont(XYABhWnd)	;get fontname of AB
+	FontSize := A_LastError 		;get fontsize of AB
+Return
+Sysdims:
 	;correct positioning takes some system gui elems into account
 	SysGet, xborder, 32
 	SysGet, yborder, 33
 	SysGet, CaptionH, 4
 	SysGet, MenuH, 15
-	GUIX	 := ABX + ABW - xborder	;^ GUIWidth is accounted for after GUI,Show
-	GUIY	 := ABY - yborder - CaptionH - MenuH - ABPadding
-	FontName := GetFont(XYABhWnd)	;get fontname of AB
-	FontSize := A_LastError 		;get fontsize of AB
 Return
 
 ;update filterbox position to match AB. Called by timer
-UpdatePos:
-	If WinActive("ahk_id" XYhWnd){
+UpdatePosAB:
+	If WinActive("ahk_id" XYhWnd) {		;update position only while XY is active
 		ControlGet, ABvis, Visible,,, ahk_id %XYABhWnd%	;get AB visiblity
-		If (ABvis = 0)					;so you hid the AB? Not allowed while I'm syncing, sorry.
-			MsgToXY("::setlayout('showaddressbar=1')")
+		If (ABvis = 0)									;if AB is hidden
+			MsgToXY("::setlayout('showaddressbar=1')")	;unhide AB while running
 		PABP = %ABX% %ABY% %ABH% %ABW%	;previous AB dims
-		PABH = %ABH%					;previous AB dims
+		PABH = %ABH%					;previous AB H
 		ControlGetPos, ABX, ABY, ABW, ABH,, ahk_id %XYABhWnd%
 		CABP = %ABX% %ABY% %ABH% %ABW%	;current AB dims
-		CABH = %ABH%					;current AB dims
-		If (PABP != CABP){				;AB position changed, sync with new position
+		CABH = %ABH%					;current AB H
+		If (PABP != CABP) {				;AB position changed, sync with new position
 			GUIX := ABX + ABW - xborder - GUIW
 			GUIY := ABY - yborder - CaptionH - MenuH - ABPadding
-			GUIH := ABH + ABPadding						;+1 to account for margin
-			If (PABH <> CABH){							;AB height change = font change
+			GUIH := ABH + ABPadding
+			If (PABH <> CABH) {							;AB height change = font change
 				FontName := GetFont(XYABhWnd)			;get new fontname
 				FontSize := A_LastError					;get new fontsize
 				Gui, Font, s%FontSize%, %FontName%		;set new font
@@ -117,7 +121,7 @@ UpdatePos:
 				GuiControl, Font, %GUiEdithWnd%			;and to pause chkbox
 			}
 			WinMove, ahk_id %GUIhWnd%,, %GUIX%, %GUIY%,, %GUIH%	;set new position
-			GuiControl, move, %GUIPausehWnd%, h%GUIH%			;pause height = filter height
+			GuiControl, move, %GUIPausehWnd%, h%GUIH%			;pause H = filter H
 			GuiControl, move, %GUIEdithWnd%, h%GUIH%			;center align pause chkbox
 		}
 	}
@@ -195,14 +199,14 @@ FocusGUI() {
   Return
 }
 ;focus parent XY window
-FocusXY(){
+FocusXY() {
 	IfWinActive, ahk_id %GUIhWnd%
 		WinActivate, ahk_id %XYhWnd%
   Return
 }
 
 ;triggered on WM_DESTROY
-Destroyer(){
+Destroyer() {
 	ExitApp
  Return
 }
