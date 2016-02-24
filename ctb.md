@@ -15,18 +15,18 @@ Icon
 ScriptL
   $FocusHotkey = "^`" ;/*Ensure this matches associated shortcut!*/ if isset($p_XYAHKLiveFilter_A){sendkeys $FocusHotkey;} else {load "<xyscripts>\XYAHKLiveFilter.CTB.xys";}
 ScriptR
-  "reset"
+  "RESET|:refreshsus"
    filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;ctbstate(0);
-  "edit"
+  "edit|:udc"
    openwith "notepad",, "<xyscripts>\XYAHKLiveFilter.xys";
 FireClick
   0
 ```
-* Make sure the _paths_ and the `$FocusHotkey` value are correct.
-* Open the CTB editor and note the CTB index.
-* Insert this index into XYAHKLiveFilter.ctb.xys as the value of $CTB.
-* Now the ctb will toggle on and run XYAHKLiveFilter, and XYAHKLiveFilter will toggle it off when quitting.
-* For best results, associate a single CTB with XYAHKLiveFilter. Also use the ctb script instead of the regular one in UDC.
+* Make sure the _paths_ and the `$FocusHotkey` value match your setup.
+* Now the associated ctb will toggle on and run XYAHKLiveFilter, and XYAHKLiveFilter will toggle it off when closing.
+* For best results, associate a single CTB with XYAHKLiveFilter. Also use this ctb to run the filter from now on
+  instead of other methods, so the ctbstate always stays synced.<br>
+  (But of course, you can make the button sync anyway with enough XYScripting expertise.)
 * The right-click menu has a basic reset routine built-in (when the filterbox doesn't come up).
 
 ####TODO
