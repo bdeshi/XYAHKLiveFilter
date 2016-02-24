@@ -6,22 +6,16 @@ A live-filter plugin for [XYplorer](http://www.xyplorer.com), made with [AutoHot
 Live-filters the file list as you type into a textbox. Uses SC `filter`, so all its syntax is available.
 
 ###INSTALL:
-* Download and extract the [release archive](/../../releases). Or clone this repo and compile the [ahk](/XYAHKLiveFilter.ahk).
-* Place `XYAHKLiveFilter.exe` in the `<xyscripts>` folder.
-* Next attach the following xyscript to a CTB and/or to a UDC item (it's also available as [`XYAHKLiveFilter.xys`](/XYAHKLiveFilter.xys)).
+* Download the [release archive](/../../releases). (Or clone this repo and compile the [ahk](/XYAHKLiveFilter.ahk) yourself.)
+* Extract the downloaded archive into `<xyscripts>` (or wherever you want).
+* Next attach the following xyscript to a CTB or to a UDC item (it simply runs [`XYAHKLiveFilter.xys`](/XYAHKLiveFilter.xys)).
 ```php
- perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
- if ($p_XYAHKLiveFilter_A != 1)||($p_XYAHKLiveFilter_B != <hwnd>){
-  $p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;
-  $FocusHotkey = "^`" ; //ex: ^`=CTRL+`, !+'=ALT+SHIFT+', !Space=ALT+SPACE
-  $SyncToAB = 1 ; //sync filterbox position with AB
-  $ABPadding = 5 ; //not effective if not $SyncToAB = 1
-  run trim(<<<#RuncmD
-  "<xyscripts>\XYAHKLiveFilter.exe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB"#RuncmD, "  ", L),, 0;
- }
+::load "<xyscripts>\xyahklivefilter.xys";
 ```
-* That's it! Now just click the CTB or trigger the UDC and filter away! (Don't forget to read about usage & options below.)
-* Don't forget to modify the path in that script to match the actual path of the exe.
+* That's it! Now just click the CTB or trigger the UDC and filter away!
+* You can obviously also run the `XYAHKLiveFilter.xys` script itself directly to do the same.
+* (Remember to modify the path in the scripts to match the actual path of the exe and xys in your setup.)
+* Don't forget to read about usage & options below.
 * See [ctb.md](/ctb.md) to learn about better CTB integration.
 
 ###USAGE:
@@ -43,8 +37,8 @@ Live-filters the file list as you type into a textbox. Uses SC `filter`, so all 
 
 ###OPTIONS:
 Some options may be modified in the XYscript.
-* `$FocusHotkey`: this value is passed as the shortcut code to instantly focus the filterbox. The default value <tt>^\`</tt> means <kbd>CTRL</kbd>+<kbd>\`</kbd>.<br/>
-  It follows [Authotkey's hotkey definition syntax](https://autohotkey.com/docs/Hotkeys.htm).
+* `$FocusHotkey`: this value is passed as the shortcut code to instantly focus the filterbox.
+   The default value <tt>^\`</tt> means <kbd>CTRL</kbd>+<kbd>\`</kbd>. It follows [Authotkey's hotkey definition syntax](https://autohotkey.com/docs/Hotkeys.htm).
 * `$SyncToAB`: if `$SyncToAB` is 1, the filterbox is positioned over right edge the of the addressbar.
   This also forces the AB to stay visible as long as livefilter is running, and reverts back to last state when the filter is closed.<br/>
   If `$SyncToAB` is not 1, then the filterbox is pops up and stays at the _topright_ of XY, and does not try to modify AB visibility.
