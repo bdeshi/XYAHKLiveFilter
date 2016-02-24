@@ -1,0 +1,37 @@
+/* An AioP (all-in-one-place) ctb script. */
+/*  set as both LClick & RClick scripts:  */
+/*        ::load 'ctb\cmd.xys',,f;        */
+
+/* xyahklf.xys//SammaySarkar//<date>
+** XYAHKLiveFilter.ctb loader stub
+*/
+
+"_Initialize"
+  // icon and caption
+  $ico = '<xyscripts>\XYAHKLiveFilter.ico';
+  $cap = "  LC: open XYAHKLiveFilter<crlf>------------------------<crlf>RC: 'Reset' XYAHKLiveFilter";
+  $lc  = '_lclick'; // left-click   scripts label(s) ;-separated
+  $rc  = '_rclick;_rclick1'; // rights-click scripts label(s) ;-separated
+
+  if !(ctbicon()){ctbicon($ico);}
+  if !(ctbname()){ctbname($cap);}
+  if     (get('trigger')==1){load *,$lc,s;}
+  elseif (get('trigger')==2){load *,$rc,s;}
+  // elseif (get('trigger')==4){load *,$rc,s;} //middle-click
+  end 1;
+
+
+/*==LCLICK======================================*/
+
+"Open XYAHKLiveFilter|<xyscripts>\XYAHKLiveFilter.ico : _lclick"
+  $FocusHotkey = "^`" ;/*Ensure this matches associated shortcut!*/
+  if isset($p_XYAHKLiveFilter_A){sendkeys $FocusHotkey;}
+  else {load "<xyscripts>\XYAHKLiveFilter.CTB.xys";}
+
+
+/*==RCLICK======================================*/
+
+"Reset|:refreshsus : _rclick"
+   filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;ctbstate(0);
+"edit|:udc : _rclick1"
+   open "<xyscripts>\XYAHKLiveFilter.ctb.xys";

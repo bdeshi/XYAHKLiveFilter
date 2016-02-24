@@ -6,7 +6,7 @@
 
  //ctb index when a ctb is associated with XYAHKLiveFilter. The script can control it's pressed state
  //Set to any value less than 0 (eg -1) to disable, when a ctb is not associated
- $CTB = 0; //<get trigger ctbindex>;
+ $CTB = <get trigger ctbindex>;
 
 
  if ($CTB >= 0){ctbicon($XYAHKLiveFilterIco, $CTB);}
