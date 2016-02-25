@@ -28,6 +28,3 @@ FireClick
   instead of other methods, so the ctbstate always stays synced.<br>
   (But of course, you can make the button sync anyway with enough XYScripting expertise.)
 * The right-click menu has a basic reset routine built-in (when the filterbox doesn't come up).
-
-####TODO
-* one click opens and another click should close filter.
