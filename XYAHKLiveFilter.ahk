@@ -15,7 +15,7 @@ Global XYhWnd						;parent/target XY window hwnd
 
 ;process XY hwnd from cmdline
 XYhWnd		= %1%
-XYhWnd		:= Format("0x{:x}", XYhWnd) ;convert to hex, like GUIhWnd
+XYhWnd		:= Format("0x{:x}", XYhWnd)	;convert to hex, like GUIhWnd
 
 ;retrieve other options from cmdline
 Shortcut	= %2%					;hotkey to focus filterbox
@@ -23,6 +23,8 @@ ABPadding	= %3%					;manual adjustent of GUI Y (for same Y of AB)
 SyncPos		= %4%					;sync GUI position with AB (else at the topleft of XY)
 OwnCTB		= %5%					;ID of associated custom toolbar button in XY (>= 0)
 ShowTip		= %6%					;show (once) or disable tooltip
+;Quoting		= %6%				;Pattern quoting: S or D;
+									;controls XY-variable resolution in pattern
 ABPadding	:= (ABPadding+0 == "") ? 5 : ABPadding
 
 OnExit, ExitRoutine					;need to cleanup before exit
@@ -35,14 +37,14 @@ Gui, +HwndGUIhWnd -Border -Caption +OwnDialogs +AlwaysOnTop
 	Gui, Margin, 2, 1
 	GoSub, Sysdims			;get some system element dims for correct positioning
 	If (SyncPos == 1)		;right-align with AB
-		GoSub, ABdims
+		GoSub, ABdims		;get AB position
 	Else					;else right-align with window
-		GoSub, Windims
+		GoSub, Windims		;get window position
 	Gui, Font, s%FontSize%, %FontName%
 	GUI, Add, Checkbox, gCallUpdateFilter hWndGUIPausehWnd 0xc00, P	;pause checkbox
 	Gui, Add, Edit, y1 gCallUpdateFilter hWndGUIEdithWnd R1, %A_Space%	;filterbox, " " for sizing
 	;set as child of XY
-	DllCall("SetParent", Ptr, GUIhWnd, Ptr, XYhWnd, Ptr)
+	DllCall("SetParent", "Ptr", GUIhWnd, "Ptr", XYhWnd, "Ptr")
 	GuiControlGet, EditPos, Pos, %GUIEdithWnd%
 	GuiControl, Move, %GUIEdithWnd%, % "w" EditPosW*12				;set a sane width
 	GuiControl, Move, %GUIPausehWnd%, % "h" EditPosH				;chkbox H==edit H
@@ -125,8 +127,8 @@ UpdatePosAB:
 				FontName := GetFont(XYABhWnd)			;get new fontname
 				FontSize := A_LastError					;get new fontsize
 				Gui, Font, s%FontSize%, %FontName%		;set new font
-				GuiControl, Font, %GUiPausehWnd%		;apply font to filterbox 
-				GuiControl, Font, %GUiEdithWnd%			;and to pause chkbox
+				GuiControl, Font, %GUIPausehWnd%		;apply font to filterbox 
+				GuiControl, Font, %GUIEdithWnd%			;and to pause chkbox
 			}
 			WinMove, ahk_id %GUIhWnd%,, %GUIX%, %GUIY%,, %GUIH%	;set new position
 			GuiControl, move, %GUIPausehWnd%, h%GUIH%			;pause H = filter H
@@ -234,7 +236,7 @@ FocusXY() {
 ;triggered on WM_DESTROY
 Destroyer() {
 	ExitApp
- Return
+  Return
 }
 
 ;=== MsgToXY() =================================================================
@@ -246,8 +248,8 @@ MsgToXY(arg_Msg) {
 		VarSetCapacity(Data, Size*2,0),StrPut(arg_Msg,&Data,Size,"UTF-16")
 	Else
 		Data := arg_Msg
-	VarSetCapacity(COPYDATA,A_PtrSize*3,0),NumPut(4194305,COPYDATA,0,Ptr)
-	NumPut(Size*2,COPYDATA,A_PtrSize,UInt),NumPut(&Data,COPYDATA,A_PtrSize*2,Ptr)
+	VarSetCapacity(COPYDATA,A_PtrSize*3,0),NumPut(4194305,COPYDATA,0,"Ptr")
+	NumPut(Size*2,COPYDATA,A_PtrSize,"UInt"),NumPut(&Data,COPYDATA,A_PtrSize*2,"Ptr")
 	SendMessage,0x4A,0,&COPYDATA,,ahk_id %XYhWnd%
   Return
 }
@@ -271,10 +273,10 @@ GetFont(arg_hwnd) {
 	SendMessage 0x31,0,0,,ahk_id %arg_hwnd%
 	IfEqual,ErrorLevel,FAIL,Return
 		hFont := Errorlevel,VarSetCapacity(LF,szLF := 60*(A_IsUnicode ? 2:1))
-	DllCall("GetObject",UInt,hFont,Int,szLF,UInt,&LF)
-	hDC := DllCall("GetDC",UInt,hwnd),DPI := DllCall("GetDeviceCaps",UInt,hDC,Int,90)
-	DllCall("ReleaseDC",Int,0,UInt,hDC),S := Round((-NumGet(LF,0,Int)*72)/DPI)
-	Return DllCall("MulDiv",Int,&LF+28,Int,1,Int,1,Str),DllCall("SetLastError",UInt,S)
+	DllCall("GetObject","UInt",hFont,"Int",szLF,"UInt",&LF)
+	hDC := DllCall("GetDC","UInt",hwnd),DPI := DllCall("GetDeviceCaps","UInt",hDC,"Int",90)
+	DllCall("ReleaseDC","Int",0,"UInt",hDC),S := Round((-NumGet(LF,0,"Int")*72)/DPI)
+	Return DllCall("MulDiv","Int",&LF+28,"Int",1,"Int",1,"Str"),DllCall("SetLastError","UInt",S)
 }
 ;=== End of GetFont() ==========================================================
 
@@ -283,8 +285,7 @@ ExitRoutine:
 	GUI, Hide				;exiting "looks" slightly faster
 	If WinExist("ahk_id " . XYhWnd) {
 		WinActivate, ahk_id %XYhWnd%	;reactivate parent
-		If (SyncPos == 1)
-			;revert AB visibility to pre-exec
+		If (SyncPos == 1)				;revert AB visibility to pre-exec
 			MsgToXY("::setlayout('showaddressbar=" ABState "');")
 		;make and send cleanup script
 		endMsg := "::filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;"
