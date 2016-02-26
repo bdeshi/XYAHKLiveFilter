@@ -40,14 +40,15 @@ Gui, +HwndGUIhWnd -Border -Caption +OwnDialogs +AlwaysOnTop
 		GoSub, Windims
 	Gui, Font, s%FontSize%, %FontName%
 	GUI, Add, Checkbox, gCallUpdateFilter hWndGUIPausehWnd 0xc00, P	;pause checkbox
-	Gui, Add, Edit, y1 gCallUpdateFilter hWndGUIEdithWnd R1, ""		;filterbox
+	Gui, Add, Edit, y1 gCallUpdateFilter hWndGUIEdithWnd R1, %A_Space%	;filterbox, " " for sizing
 	;set as child of XY
 	DllCall("SetParent", Ptr, GUIhWnd, Ptr, XYhWnd, Ptr)
 	GuiControlGet, EditPos, Pos, %GUIEdithWnd%
-	GuiControl, Move, %GUIEdithWnd%, % "w" EditPosW*8				;set a sane width
+	GuiControl, Move, %GUIEdithWnd%, % "w" EditPosW*12				;set a sane width
 	GuiControl, Move, %GUIPausehWnd%, % "h" EditPosH				;chkbox H==edit H
+	GuiControl,, %GUIEdithWnd%, % ""								;remove default " " content
+	GuiControl, Focus, %GUIEdithWnd%								;focus filterbox
 	Gui, Show, X%GUIX% Y%GUIY% AutoSize
-	SendInput, {Right}{Left}										;put cursor between quotes
 
 ;setup position
 WinGetPos,,, GUIW,, ahk_id %GUIhWnd%			;get current width
@@ -159,6 +160,11 @@ Return
 ;get filterbox content and pass to XY
 UpdateFilter:
 	GuiControlGet, StrFilter,, %GUIEdithWnd%	;get current filterbox text
+	; escape and/or enclose in SINGLE-quotes (so pattern stays non-resolved)
+	IfInString, StrFilter, % "'"
+		StrFilter := "'" StrReplace(StrFilter, "'", "''") "'"
+	Else
+		StrFilter := "'" StrFilter "'"
 	;same filter twice resets VF, so skip that
 	If (LastFilter != StrFilter) {			;check if last sent filter is unique
 		LastFilter := StrFilter				;remember current filter as last one
