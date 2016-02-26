@@ -23,7 +23,7 @@ ABPadding	= %3%					;manual adjustent of GUI Y (for same Y of AB)
 SyncPos		= %4%					;sync GUI position with AB (else at the topleft of XY)
 OwnCTB		= %5%					;ID of associated custom toolbar button in XY (>= 0)
 ShowTip		= %6%					;show (once) or disable tooltip
-ABPadding	:= (ABPadding+0 = "") ? 5 : ABPadding
+ABPadding	:= (ABPadding+0 == "") ? 5 : ABPadding
 
 OnExit, ExitRoutine					;need to cleanup before exit
 OnMessage(0x4a, "MsgFromXY")		;WM_COPYDATA
@@ -34,24 +34,24 @@ OnMessage(0x02, "Destroyer")		;WM_DESTROY
 Gui, +HwndGUIhWnd -Border -Caption +OwnDialogs +AlwaysOnTop
 	Gui, Margin, 2, 1
 	GoSub, Sysdims			;get some system element dims for correct positioning
-	If (SyncPos = 1)		;right-align with AB
+	If (SyncPos == 1)		;right-align with AB
 		GoSub, ABdims
 	Else					;else right-align with window
 		GoSub, Windims
 	Gui, Font, s%FontSize%, %FontName%
 	GUI, Add, Checkbox, gCallUpdateFilter hWndGUIPausehWnd 0xc00, P	;pause checkbox
-	Gui, Add, Edit, y1 gCallUpdateFilter hWndGUIEdithWnd R1, ""		;the filterbox
+	Gui, Add, Edit, y1 gCallUpdateFilter hWndGUIEdithWnd R1, ""		;filterbox
 	;set as child of XY
-	DllCall("SetParent", "Ptr", GUIhWnd, "Ptr", XYhWnd, "Ptr")
+	DllCall("SetParent", Ptr, GUIhWnd, Ptr, XYhWnd, Ptr)
 	GuiControlGet, EditPos, Pos, %GUIEdithWnd%
 	GuiControl, Move, %GUIEdithWnd%, % "w" EditPosW*8				;set a sane width
 	GuiControl, Move, %GUIPausehWnd%, % "h" EditPosH				;chkbox H==edit H
 	Gui, Show, X%GUIX% Y%GUIY% AutoSize
-	SendInput, {Right}{Left}										;put cursor between default quotes
+	SendInput, {Right}{Left}										;put cursor between quotes
 
 ;setup position
 WinGetPos,,, GUIW,, ahk_id %GUIhWnd%			;get current width
-If (SyncPos = 1){								;right align filterbox with AB
+If (SyncPos == 1) {								;right align filterbox with AB
 	GUIX := AncX + AncW - xborder - GUIW		;get real abwidth - GUIWidth
 	SetTimer, UpdatePosAB, 100					;turn on the position synchronizer
 }
@@ -70,7 +70,7 @@ Hotkey, IfWinActive, ahk_id %GUIhWnd%
 	Hotkey, Tab, lblFocusXY					;tab to give focus to XY
 	Hotkey, Enter, UpdateFilter				;ENTER to force filter update
 	Hotkey, !p, lblTogglePause				;alt+p to toggle pause status
-	;escape key closes GUI by GuiEscape label
+	;and Escape key closes GUI via GuiEscape label
 Return
 ;=== END OF AUTO-EXECUTION SECTION =============================================
 
@@ -109,7 +109,7 @@ Return
 UpdatePosAB:
 	If WinActive("ahk_id" XYhWnd) {			;update position only while XY is active
 		ControlGet, ABvis, Visible,,, ahk_id %XYABhWnd%	;get AB visiblity
-		If (ABvis = 0)									;if AB is hidden
+		If (ABvis == 0)									;if AB is hidden
 			MsgToXY("::setlayout('showaddressbar=1')")	;unhide AB while running
 		PAncA = %AncX% %AncY% %AncH% %AncW%	;previous AB dims
 		PAncB = %AncH%						;previous AB H
@@ -151,7 +151,7 @@ Return
 CallUpdateFilter:
 	GuiControl, Focus, %GUIEdithWnd%		;refocus filterbox always
 	GuiControlGet, Paused,, %GUIPausehWnd%	;get current Pause state
-	If (Paused = 1)
+	If (Paused == 1)
 		Return			;stop msging (ie live-flitering) while paused
 	GoSub, UpdateFilter	;else proceed with filter update
 Return
@@ -171,7 +171,7 @@ Return
 ;toggles pause status
 lblTogglePause:
 	GuiControlGet, Paused,, %GUIPausehWnd%					;get current 'P'ause state
-	GuiControl,, %GUIPausehWnd%, % ((Paused = 0) ? 1 : 0)	;toggle status
+	GuiControl,, %GUIPausehWnd%, % ((Paused == 0) ? 1 : 0)	;toggle status
 	;updateFilter is set to run automatically on pause state change
 	;but it doesn't seem to trigger on programmatic change
 	GoSub, CallUpdateFilter
@@ -207,7 +207,7 @@ FocusGUI() {
 	Return
 	TTOn:	;sub to show tips
 		ToolTip, % "CHECKBOX/Alt+P: Pause livemode`nTEXTBOX: enter filter pattern`n"
-				 . "FOCUS HOTKEY:" . (Shortcut = "" ? "{None}": Shortcut)
+				 . "FOCUS HOTKEY:" . (Shortcut == "" ? "{None}": Shortcut)
 		SetTimer, TTOn, Off		;delete this timer so tips are shown once per session
 		SetTimer, TTOff, 2000	;hide tip after a delay
 	Return
@@ -236,16 +236,13 @@ Destroyer() {
 ;function lifted from binocular222's XYplorer Messenger[AHK], (thanks!)
 MsgToXY(arg_Msg) {
 	Size := StrLen(arg_Msg)
-	If !(A_IsUnicode) {
-		VarSetCapacity(Data, Size * 2, 0)
-		StrPut(arg_Msg, &Data, Size, "UTF-16")
-	} Else
+	If !(A_IsUnicode)
+		VarSetCapacity(Data, Size*2,0),StrPut(arg_Msg,&Data,Size,"UTF-16")
+	Else
 		Data := arg_Msg
-	VarSetCapacity(COPYDATA, A_PtrSize * 3, 0)
-	NumPut(4194305, COPYDATA, 0, "Ptr")
-	NumPut(Size * 2, COPYDATA, A_PtrSize, "UInt")
-	NumPut(&Data, COPYDATA, A_PtrSize * 2, "Ptr")
-	SendMessage, 0x4A, 0, &COPYDATA,, ahk_id %XYhWnd%
+	VarSetCapacity(COPYDATA,A_PtrSize*3,0),NumPut(4194305,COPYDATA,0,Ptr)
+	NumPut(Size*2,COPYDATA,A_PtrSize,UInt),NumPut(&Data,COPYDATA,A_PtrSize*2,Ptr)
+	SendMessage,0x4A,0,&COPYDATA,,ahk_id %XYhWnd%
   Return
 }
 ;=== End of MsgToXY() ==========================================================
@@ -253,10 +250,9 @@ MsgToXY(arg_Msg) {
 ;triggers on recv WM_COPYDATA from %XYhWnd%, puts data to %ReceivedData%
 ;also based on binocular222's code
 MsgFromXY(wParam, lParam) {
-	StringAddress := NumGet(lParam + 2*A_PtrSize)
-	cbData := NumGet(lParam+A_PtrSize) / 2
-	CopyOfData := StrGet(StringAddress)
-	StringLeft, ReceivedData, CopyOfData, cbData
+	StringAddress := NumGet(lParam+2*A_PtrSize)
+	cbData := NumGet(lParam+A_PtrSize)/2,CopyOfData := StrGet(StringAddress)
+	StringLeft,ReceivedData,CopyOfData,cbData
   Return
 }
 ;=== End of MsgFromXY() ========================================================
@@ -271,7 +267,7 @@ GetFont(arg_hwnd) {
 		hFont := Errorlevel,VarSetCapacity(LF,szLF := 60*(A_IsUnicode ? 2:1))
 	DllCall("GetObject",UInt,hFont,Int,szLF,UInt,&LF)
 	hDC := DllCall("GetDC",UInt,hwnd),DPI := DllCall("GetDeviceCaps",UInt,hDC,Int,90)
-	DllCall("ReleaseDC",Int,0,UInt,hDC),S := Round((-NumGet(LF,0,"Int")*72)/DPI)
+	DllCall("ReleaseDC",Int,0,UInt,hDC),S := Round((-NumGet(LF,0,Int)*72)/DPI)
 	Return DllCall("MulDiv",Int,&LF+28,Int,1,Int,1,Str),DllCall("SetLastError",UInt,S)
 }
 ;=== End of GetFont() ==========================================================
@@ -281,7 +277,7 @@ ExitRoutine:
 	GUI, Hide				;exiting "looks" slightly faster
 	If WinExist("ahk_id " . XYhWnd) {
 		WinActivate, ahk_id %XYhWnd%	;reactivate parent
-		If (SyncPos = 1)
+		If (SyncPos == 1)
 			;revert AB visibility to pre-exec
 			MsgToXY("::setlayout('showaddressbar=" ABState "');")
 		;make and send cleanup script
