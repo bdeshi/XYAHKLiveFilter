@@ -2,38 +2,51 @@
  //http://xyplorer.com/xyfc/viewtopic.php?&t=12588
  //https://github.com/smsrkr/XYAHKLiveFilter
 
- $XYAHKLiveFilterExe = "<xyscripts>\XYAHKLiveFilter.exe";
- //$XYAHKLiveFilerExe = "path\to\autohotkey.exe"" ""<xyscripts>\XYAHKLiveFilter.ahk";
- $XYAHKLiveFilterIco = "<xyscripts>\XYAHKLiveFilter.ico";
-
- //ctb index when a ctb is associated with XYAHKLiveFilter. The script can control it's pressed state
- //Set to 0 to disable, but then why are you using this ctb script at all?
- $OwnCTB = <get trigger ctbindex>;
-
-
- if ($OwnCTB > 0){ctbicon($XYAHKLiveFilterIco, $OwnCTB);}
-
- perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
- if ($p_XYAHKLiveFilter_A != 1)||($p_XYAHKLiveFilter_B != <hwnd>) {
-  $p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;
-  if ($OwnCTB > 0){ctbstate(1, $OwnCTB);} //set pressed state
-
-  //following variables are customizable options, each of these can be set empty (passed as cmdline args)
-  //$FocusHotkey='^`': Keyboard shortcut to focusbox filter. ^` = CTRL+`, !+' = ALT+SHIFT+', !Space = ALT+SPACE
+  //following variables are customizable options, each of these can be set empty
+  //$OPTION="DEFAULT": DESCRIPTION
+  //------------------------------
+  //$FocusHotkey='^`': Keyboard shortcut to focusbox filter. ^=CTRL,!=ALT,+=SHIFT,!Space = ALT+SPACE
   //TAB/SHIFT+Tab, ENTER and ALT+P are reserved, please do not use any of these.
   $FocusHotkey = '^`' ;
-  //$SyncToAB=1: Keep filterbox position in sync with addressbar (force-enables addressbar)
-  //Any other value makes the filterbox popup at the topright corner (doesn't force addressbar)
-  $SyncToAB    = 1 ;
-  //$ABPadding=5: Y-axis position adjustment (in pixels) for filterbox. Use a (small) number: 0,4,-3 etc
-  //This should be modified only if filterbox top margin doesn't match addressbar's. No effect if $SyncToAB != 1
-  $ABPadding   = 5 ;
-  //$Quote='S': Controls how the VF pattern is quoted. Use "S" for single quotes or "D" for double quotes.
-  //Any quotes inside the pattern are taken care of. XY variables are not resolved in sinlge quotes.
-  $Quote       = 'S' ;
+  //------------------------------
+  //$SyncToAB=1: Keep filterbox position in sync with addressbar (forces addressbar to stay visible)
+  //On any other value, the filterbox stay at the topright corner (doesn't change addressbar status)
+  $SyncToAB    =  1   ;
+  //-------------------------------
+  //$ABPadding=5: Y-axis position adjustment (in pixels) of filterbox. Use small numbers:0,4,-3 etc.
+  //Change this only if filterbox top margin doesn't match addressbar's. No effect if $SyncToAB != 1
+  $ABPadding   =  5   ;
+  //-------------------------------
+  //$Quote='S': Controls how the VF pattern is quoted. Use "S" for single quotes, or "D" for doubles
+  //Any quotes inside the pattern are taken care of. XY variables remain unresolved in single quotes
+  $Quote       = 'S'  ;
+  //-------------------------------
+  //NextAction=1: Controls what subsequent tries to start XYAHKLiveFilter do. 1: refocus, 2: close.
+  //So you can, for example, click the CTB once to open the filterbox, and click it again to focus.
+  $NextAction  =  1   ;
 
-  run """$XYAHKLiveFilterExe"" ""<hwnd>"" ""$FocusHotkey"" ""$ABPadding"" ""$SyncToAB"" ""$OwnCTB"" ""$Quote""",, 0;
+  //------------------------------//
+  // DO NOT MODIFY ANYTHING BELOW //
+  //------------------------------//
+
+ //ctb index of the ctb associated with XYAHKLiveFilter. The exe can toggle on/off its pressed state
+ //Set to 0 to disable, but then why would you this ctb script at all?
+ $OwnCTB = <get trigger ctbindex>;
+
+ $XYAHKLiveFilterExe = "<xyscripts>\XYAHKLiveFilter.exe";
+ //$XYAHKLiveFilterExe = "<@programs>\autohotkey\autohotkey.exe"" ""XYAHKLiveFilter.ahk";
+ $XYAHKLiveFilterIco = "<xyscripts>\XYAHKLiveFilter.ico";
+ if ($OwnCTB > 0){ctbicon($XYAHKLiveFilterIco, $OwnCTB);}
+ perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
+ if ($p_XYAHKLiveFilter_A != 1)||(gettoken($p_XYAHKLiveFilter_B,1) != <hwnd>) {
+  $p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;
+  if ($OwnCTB > 0){ctbstate(1, $OwnCTB);} //set pressed state
+    run trim(<<<#RuncmD
+    "$XYAHKLiveFilterExe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB" "$OwnCTB" "$Quote"#RuncmD,
+    " <tab>", L),, 0;
  }
  else {
-  if ($OwnCTB > 0){ctbstate(0, $OwnCTB);} //set pressed state
+  $action = 'FOCUS QUIT';
+  $action = gettoken($action, $NextAction);
+  copydata gettoken($p_XYAHKLiveFilter_B, 2), $action, 1;
  }

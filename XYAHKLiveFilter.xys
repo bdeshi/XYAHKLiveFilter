@@ -2,26 +2,48 @@
  //http://xyplorer.com/xyfc/viewtopic.php?&t=12588
  //https://github.com/smsrkr/XYAHKLiveFilter
 
- perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
- if ($p_XYAHKLiveFilter_A != 1)||($p_XYAHKLiveFilter_B != <hwnd>){
-  $p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;
-
-  //following variables are customizable options, each of these can be set empty (passed as cmdline args)
-  //$FocusHotkey='^`': Keyboard shortcut to focusbox filter. ^` = CTRL+`, !+' = ALT+SHIFT+', !Space = ALT+SPACE
+  //following variables are customizable options, each of these can be set empty
+  //$OPTION="DEFAULT": DESCRIPTION
+  //------------------------------
+  //$FocusHotkey='^`': Keyboard shortcut to focusbox filter. ^=CTRL,!=ALT,+=SHIFT,!Space = ALT+SPACE
   //TAB/SHIFT+Tab, ENTER and ALT+P are reserved, please do not use any of these.
   $FocusHotkey = '^`' ;
-  //$SyncToAB=1: Keep filterbox position in sync with addressbar (force-enables addressbar)
-  //Any other value makes the filterbox popup at the topright corner (doesn't force addressbar)
-  $SyncToAB    = 1 ;
-  //$ABPadding=5: Y-axis position adjustment (in pixels) for filterbox. Use a (small) number: 0,4,-3 etc
-  //This should be modified only if filterbox top margin doesn't match addressbar's. No effect if $SyncToAB != 1
-  $ABPadding   = 5 ;
-  //$Quote='S': Controls how the VF pattern is quoted. Use "S" for single quotes or "D" for double quotes.
-  //Any quotes inside the pattern are taken care of. XY variables are not resolved in sinlge quotes.
-  $Quote       = 'S' ;
-  //DO NOT MODIFY THIS HERE. See XYAHKLiveFilter.CTB.xys
-  $OwnCTB = 0 ;  if ($OwnCTB > 1) {ctbstate(1, $OwnCTB);}
-  run trim(<<<#RuncmD
-  "<xyscripts>\XYAHKLiveFilter.exe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB" "$OwnCTB" "$Quote"#RuncmD,
-  " <tab>", L),, 0;
- }
+  //------------------------------
+  //$SyncToAB=1: Keep filterbox position in sync with addressbar (forces addressbar to stay visible)
+  //On any other value, the filterbox stay at the topright corner (doesn't change addressbar status)
+  $SyncToAB    =  1   ;
+  //-------------------------------
+  //$ABPadding=5: Y-axis positon adjustment (in pixels) of filterbox. Use a small number: 0,4,-3 etc
+  //Change this only if filterbox top margin doesn't match addressbar's. No effect if $SyncToAB != 1
+  $ABPadding   =  5   ;
+  //-------------------------------
+  //$Quote='S': Controls how the VF pattern is quoted. Use "S" for single quotes or "D" for doubles.
+  //Any quotes inside the pattern are taken care of. XY variables are not resolved in single quotes.
+  $Quote       = 'S'  ;
+  //-------------------------------
+  //NextAction=1: Controls what subsequent tries to start XYAHKLiveFilter do. 1: refocus, 2: close.
+  //So you can, for example, click the CTB once to open the filterbox, and click again to focus it.
+  $NextAction  =  1   ;
+  //-------------------------------
+  //$OwnCTB=0: You _may_ set this to the CTBIndex of any associated CTB. But you're better off using
+  //XYAHKLiveFilter.CTB.xys for CTB association.
+  $OwnCTB     =  0   ;
+
+  //------------------------------//
+  // DO NOT MODIFY ANYTHING BELOW //
+  //------------------------------//
+
+  $XYAHKLiveFilterExe = "<xyscripts>\XYAHKLiveFilter.exe";
+  //$XYAHKLiveFilterExe = "<@programs>\autohotkey\autohotkey.exe"" ""XYAHKLiveFilter.ahk";
+  perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
+  if ($p_XYAHKLiveFilter_A != 1)||(gettoken($p_XYAHKLiveFilter_B,1) != <hwnd>){
+    $p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;
+    if ($OwnCTB > 0) {ctbstate(1, $OwnCTB);}
+    run trim(<<<#RuncmD
+    "$XYAHKLiveFilterExe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB" "$OwnCTB" "$Quote"#RuncmD,
+    " <tab>", L),, 0;
+  } else {
+    $action = 'FOCUS QUIT';
+    $action = gettoken($action, $NextAction);
+    copydata gettoken($p_XYAHKLiveFilter_B, 2), $action, 1;
+  }
