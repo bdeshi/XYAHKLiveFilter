@@ -32,10 +32,15 @@ Else
 	Quote := "S"
 Quote := (Quote = "S") ? "'" : """" ;single '=' case-insensitive compare
 
+;setup event hooks
 OnExit, ExitRoutine					;need to cleanup before exit
 OnMessage(0x4a, "MsgFromXY")		;WM_COPYDATA
 OnMessage(0x02, "Destroyer")		;WM_DESTROY
 ;OnMessage(0x200, "FocusGUI")		;WM_MOUSEMOVE | disabled, non-standard
+
+;get current VF/GVF
+MsgToXY("::copydata " AHKhWnd ",get('visualfilter');")
+CurrVF := ReceivedData
 
 ;setup GUI
 Gui, +HwndGUIhWnd -Border -Caption +OwnDialogs +AlwaysOnTop
@@ -47,13 +52,14 @@ Gui, +HwndGUIhWnd -Border -Caption +OwnDialogs +AlwaysOnTop
 		GoSub, Windims		;get window position
 	Gui, Font, s%FontSize%, %FontName%
 	GUI, Add, Checkbox, gCallUpdateFilter hWndGUIPausehWnd 0xc00, P	;pause checkbox
-	Gui, Add, Edit, y1 gCallUpdateFilter hWndGUIEdithWnd R1, %A_Space%	;filterbox, " " for sizing
+	Gui, Add, Edit, y1 hWndGUIEdithWnd R1, %A_Space%				;filterbox, " " for sizing
 	;set as child of XY
 	DllCall("SetParent", "Ptr", GUIhWnd, "Ptr", XYhWnd, "Ptr")
 	GuiControlGet, EditPos, Pos, %GUIEdithWnd%
 	GuiControl, Move, %GUIEdithWnd%, % "w" EditPosW*12				;set a sane width
 	GuiControl, Move, %GUIPausehWnd%, % "h" EditPosH				;chkbox H==edit H
-	GuiControl,, %GUIEdithWnd%, % ""								;remove default " " content
+	GuiControl,, %GUIEdithWnd%, %CurrVF%							;remove default " " content
+	GuiControl, +gCallUpdateFilter, %GUIEdithWnd%					;add label after setting text
 	GuiControl, Focus, %GUIEdithWnd%								;focus filterbox
 	Gui, Show, X%GUIX% Y%GUIY% AutoSize
 
@@ -290,8 +296,8 @@ ExitRoutine:
 		If (SyncPos == 1)				;revert AB visibility to pre-exec
 			MsgToXY("::setlayout('showaddressbar=" ABState "');")
 		;make and send cleanup script
-		endMsg := "::filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;"
-				. ((OwnCTB > 0) ? "ctbstate(0, " OwnCTB ")" : "") . ";"
+		endMsg := "::filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;" 
+					. ((OwnCTB >= 1) ? "ctbstate(0, " OwnCTB ");" : "")
 		MsgToXY(endMsg)
 	}
 	ExitApp
