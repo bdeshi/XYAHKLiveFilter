@@ -1,0 +1,21 @@
+Snip: CTB 1
+  XYplorer 16.30.0004, 2/27/2016 10:10:10 PM
+Action
+  NewUserButton
+Name
+  LC: XYAHKLiveFilter
+      (toggle/focus)
+  
+  RC: Reset XYAHKLiveFilter
+      (if it doesn't open)
+Icon
+  <xyscripts>\XYAHKLiveFilter.ico
+ScriptL
+  ::load "<xyscripts>\XYAHKLiveFilter.xys";
+ScriptR
+  "RESET|:refreshsus"
+   unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;ctbstate(0);
+  "edit script|:udc"
+   openwith "notepad",, "<xyscripts>\XYAHKLiveFilter.xys";
+FireClick
+  1
