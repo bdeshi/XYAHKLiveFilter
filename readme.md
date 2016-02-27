@@ -1,9 +1,9 @@
 ## XYAHKLiveFilter
-[forum](http://www.xyplorer.com/xyfc/viewtopic.php?t=12588)|[source](https://www.github.com/smsrkr/XYAHKLiveFilter) | 
+[forum](http://www.xyplorer.com/xyfc/viewtopic.php?t=12588)|[code](https://www.github.com/smsrkr/XYAHKLiveFilter) | 
 [releases](https://www.github.com/smsrkr/XYAHKLiveFilter/releases)|[bugreport](https://www.github.com/smsrkr/XYAHKLiveFilter/issues)<br/>
 
 A live-filter plugin for [XYplorer](http://www.xyplorer.com), made with [AutoHotkey](https://autohotkey.com)<br/>
-Live-filters the file list as you type into a textbox. Uses SC `filter`, so all its syntax is available.
+Live-filters the file list as you type into a textbox. Uses SC `filter`, so all VF syntax is available.
 
 ###INSTALL:
 * Download the [release archive](/../../releases). (Or clone this repo and compile the [ahk](/XYAHKLiveFilter.ahk) yourself.)

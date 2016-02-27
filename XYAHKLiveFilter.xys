@@ -1,14 +1,25 @@
- //XYAHKLiveFilter.xys/v4.2.0//author:SammaySarkar
+ //XYAHKLiveFilter.xys/v4.5.0b//author:SammaySarkar
  //http://xyplorer.com/xyfc/viewtopic.php?&t=12588
+ https://github.com/smsrkr/XYAHKLiveFilter
 
  perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
  if ($p_XYAHKLiveFilter_A != 1)||($p_XYAHKLiveFilter_B != <hwnd>){
   $p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;
 
-  $FocusHotkey = "^`" ; //ex: ^`=CTRL+`, !+'=ALT+SHIFT+', !Space=ALT+SPACE
-  $SyncToAB = 1 ; //sync filterbox position with AB
-  $ABPadding = 5 ; //not effective if not $SyncToAB = 1
+  //following variables are customizable options, each of these can be set empty (passed as cmdline args)
+  //$FocusHotkey='^`': Keyboard shortcut to focusbox filter. ^` = CTRL+`, !+' = ALT+SHIFT+', !Space = ALT+SPACE
+  //TAB/SHIFT+Tab, ENTER and ALT+P are reserved, please do not use any of these.
+  $FocusHotkey = '^`' ;
+  //$SyncToAB=1: Keep filterbox position in sync with addressbar (force-enables addressbar)
+  //Any other value makes the filterbox popup at the topright corner (doesn't force addressbar)
+  $SyncToAB    = 1 ;
+  //$ABPadding=5: Y-axis position adjustment (in pixels) for filterbox. Use a (small) number: 0,4,-3 etc
+  //This should be modified only if filterbox top margin doesn't match addressbar's. No effect if $SyncToAB != 1
+  $ABPadding   = 5 ;
 
+  //DO NOT MODIFY THIS HERE. See XYAHKLiveFilter.CTB.xys
+  $OwnCTB      = 0 ;
   run trim(<<<#RuncmD
-  "<xyscripts>\XYAHKLiveFilter.exe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB"#RuncmD,"  ",L),, 0;
+  "<xyscripts>\XYAHKLiveFilter.exe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB" "OwnCTB"#RuncmD,
+  " <tab>", L),, 0;
  }

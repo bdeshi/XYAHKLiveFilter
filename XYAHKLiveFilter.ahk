@@ -1,5 +1,6 @@
-;XYAHKLiveFilter.ahk/v4.2.0/author:SammaySarkar
+;XYAHKLiveFilter.ahk/v4.5.0b/author:SammaySarkar
 ;http://xyplorer.com/xyfc/viewtopic.php?t=12588
+;https://github.com/smsrkr/XYAHKLiveFilter
 
 #SingleInstance, Off				;multiple instances can run for multiple XY instances
 #NoTrayIcon							;hide tray icon
@@ -20,12 +21,10 @@ XYhWnd		:= Format("0x{:x}", XYhWnd)	;convert to hex, like GUIhWnd
 ;retrieve other options from cmdline
 Shortcut	= %2%					;hotkey to focus filterbox
 ABPadding	= %3%					;manual adjustent of GUI Y (for same Y of AB)
+ABPadding	:= (ABPadding+0 == "") ? 5 : ABPadding
 SyncPos		= %4%					;sync GUI position with AB (else at the topleft of XY)
 OwnCTB		= %5%					;ID of associated custom toolbar button in XY (>= 0)
-ShowTip		= %6%					;show (once) or disable tooltip
-;Quoting		= %6%				;Pattern quoting: S or D;
-									;controls XY-variable resolution in pattern
-ABPadding	:= (ABPadding+0 == "") ? 5 : ABPadding
+;Quote		= %6%					;Pattern quoting; S or D: single-quotes or double
 
 OnExit, ExitRoutine					;need to cleanup before exit
 OnMessage(0x4a, "MsgFromXY")		;WM_COPYDATA
@@ -289,7 +288,7 @@ ExitRoutine:
 			MsgToXY("::setlayout('showaddressbar=" ABState "');")
 		;make and send cleanup script
 		endMsg := "::filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;"
-				. ((OwnCTB > -1) ? "ctbstate(0, " OwnCTB ")" : "") . ";"
+				. ((OwnCTB > 0) ? "ctbstate(0, " OwnCTB ")" : "") . ";"
 		MsgToXY(endMsg)
 	}
 	ExitApp
