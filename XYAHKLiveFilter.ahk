@@ -3,16 +3,21 @@
 ;https://github.com/smsrkr/XYAHKLiveFilter
 
 #SingleInstance, Off				;multiple instances can run for multiple XY instances
-#NoTrayIcon							;hide tray icon
+;#NoTrayIcon							;hide tray icon
 #NoEnv								;(recommended)
 SetBatchLines, 10ms					;good balance of speed/CPU (so says AHK doc)
 SetControlDelay, -1					;fastest possible control operations
 
 Global AHKhWnd := A_ScriptHwnd + 0	;own hwnd in base10, can pass to SC copydata
-Global ReceivedData					;holds WM_COPYDATA return (temporarily)
+Global ReceivedData, ActionData		;holds WM_COPYDATA returns
 Global GUIhWnd						;holds gui hwnd
-Global GUIEdithWnd, GUIPausehWnd	;holds gui elements hwnd
+Global GUIEdithWnd,GUIPausehWnd		;holds gui elements hwnd
 Global XYhWnd						;parent/target XY window hwnd
+Global dwDataMode					;dwData possible values sent from XY
+
+dwDataMode	:= [4194304,4194305,4194306] ;corresp. modes 0,1,2
+;data sent in mode 0 is utilized in normal progran flow
+;data sent in mode 1 triggers actions like focus/quit etc based on data
 
 ;process XY hwnd from cmdline
 XYhWnd		= %1%
@@ -38,8 +43,11 @@ OnMessage(0x4a, "MsgFromXY")		;WM_COPYDATA
 OnMessage(0x02, "Destroyer")		;WM_DESTROY
 ;OnMessage(0x200, "FocusGUI")		;WM_MOUSEMOVE | disabled, non-standard
 
+;store own HWND in 2nd var as <xyHwnd> <ownHwnd>
+MsgToXY("::perm $p_XYAHKLiveFilter_B = $p_XYAHKLiveFilter_B.' '." AHKhWnd ";")
+
 ;get current VF/GVF
-MsgToXY("::copydata " AHKhWnd ",get('visualfilter');")
+MsgToXY("::copydata " AHKhWnd ",get('visualfilter'),0;")
 CurrVF := ReceivedData
 
 ;setup GUI
@@ -138,12 +146,12 @@ UpdatePosAB:
 				FontName := GetFont(XYABhWnd)			;get new fontname
 				FontSize := A_LastError					;get new fontsize
 				Gui, Font, s%FontSize%, %FontName%		;set new font
-				GuiControl, Font, %GUIPausehWnd%		;apply font to filterbox 
-				GuiControl, Font, %GUIEdithWnd%			;and to pause chkbox
+				GuiControl, Font, %GUIPausehWnd%		;apply font to P chkbox
+				GuiControl, Font, %GUIEdithWnd%			;and to filterbox
 			}
 			WinMove, ahk_id %GUIhWnd%,, %GUIX%, %GUIY%,, %GUIH%	;set new position
-			GuiControl, move, %GUIPausehWnd%, h%GUIH%			;pause H = filter H
-			GuiControl, move, %GUIEdithWnd%, h%GUIH%			;center align pause chkbox
+			GuiControl, move, %GUIPausehWnd%, h%GUIH%			;pause H = GUI H
+			GuiControl, move, %GUIEdithWnd%, h%GUIH%			;filterH - GUI H
 		}
 	}
 Return
@@ -159,6 +167,10 @@ UpdatePosWin:
 			WinMove, ahk_id %GUIhWnd%,, %GUIX%, %GUIY%	;set new position
 		}
 	}
+Return
+
+;toggle between VF and GVF
+SwitchGVF:
 Return
 
 ;triggered by filterbox or Pause chkbox change.
@@ -247,6 +259,12 @@ Destroyer() {
   Return
 }
 
+ActionTrigger:
+	If (ActionData == "FOCUS")
+		FocusGUI()
+	Else If (ActionData == "QUIT")
+		ExitApp
+Return
 ;=== MsgToXY() =================================================================
 ;send arg_Msg to %XYhWnd% via WM_COPYDATA
 ;function lifted from binocular222's XYplorer Messenger[AHK], (thanks!)
@@ -256,7 +274,7 @@ MsgToXY(arg_Msg) {
 		VarSetCapacity(Data, Size*2,0),StrPut(arg_Msg,&Data,Size,"UTF-16")
 	Else
 		Data := arg_Msg
-	VarSetCapacity(COPYDATA,A_PtrSize*3,0),NumPut(4194305,COPYDATA,0,"Ptr")
+	VarSetCapacity(COPYDATA,A_PtrSize*3,0),NumPut(dwDataMode[2],COPYDATA,0,"Ptr")
 	NumPut(Size*2,COPYDATA,A_PtrSize,"UInt"),NumPut(&Data,COPYDATA,A_PtrSize*2,"Ptr")
 	SendMessage,0x4A,0,&COPYDATA,,ahk_id %XYhWnd%
   Return
@@ -264,11 +282,17 @@ MsgToXY(arg_Msg) {
 ;=== End of MsgToXY() ==========================================================
 ;=== MsgFromXY() ===============================================================
 ;triggers on recv WM_COPYDATA from %XYhWnd%, puts data to %ReceivedData%
-;also based on binocular222's code
 MsgFromXY(wParam, lParam) {
 	StringAddress := NumGet(lParam+2*A_PtrSize)
 	cbData := NumGet(lParam+A_PtrSize)/2,CopyOfData := StrGet(StringAddress)
-	StringLeft,ReceivedData,CopyOfData,cbData
+	dwData := NumGet(lParam+0) ; dwData is 1st DWORD sized member
+	;mode 0==4194304/1==4194305/2==4194306
+	If (dwData == dwData[1]) ; mode 0, continue
+		StringLeft,ReceivedData,CopyOfData,cbData
+	Else { ;mode 1, trigger app action
+		StringLeft,ActionData,CopyOfData,cbData
+		Gosub, ActionTrigger
+	}
   Return
 }
 ;=== End of MsgFromXY() ========================================================
