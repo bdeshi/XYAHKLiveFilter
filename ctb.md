@@ -17,7 +17,9 @@ ScriptL
 ScriptR
   "RESET|:refreshsus"
    filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;ctbstate(0);
-  "edit|:udc"
+  "edit CTB script|:udc"
+   openwith "notepad",, "<xyscripts>\XYAHKLiveFilter.CTB.xys";
+  "edit BASE script|:udc"
    openwith "notepad",, "<xyscripts>\XYAHKLiveFilter.xys";
 FireClick
   0

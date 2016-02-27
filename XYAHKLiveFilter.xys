@@ -1,6 +1,6 @@
  //XYAHKLiveFilter.xys/v4.5.0b//author:SammaySarkar
  //http://xyplorer.com/xyfc/viewtopic.php?&t=12588
- https://github.com/smsrkr/XYAHKLiveFilter
+ //https://github.com/smsrkr/XYAHKLiveFilter
 
  perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
  if ($p_XYAHKLiveFilter_A != 1)||($p_XYAHKLiveFilter_B != <hwnd>){
@@ -16,10 +16,12 @@
   //$ABPadding=5: Y-axis position adjustment (in pixels) for filterbox. Use a (small) number: 0,4,-3 etc
   //This should be modified only if filterbox top margin doesn't match addressbar's. No effect if $SyncToAB != 1
   $ABPadding   = 5 ;
-
+  //$Quote='S': Controls how the VF pattern is quoted. Use "S" for single quotes or "D" for double quotes.
+  //Any quotes inside the pattern are taken care of. XY variables are not resolved in sinlge quotes.
+  $Quote       = 'S' ;
   //DO NOT MODIFY THIS HERE. See XYAHKLiveFilter.CTB.xys
-  $OwnCTB      = 0 ;
+  $OwnCTB = 0 ;  if ($OwnCTB > 1) {ctbstate(1, $OwnCTB);}
   run trim(<<<#RuncmD
-  "<xyscripts>\XYAHKLiveFilter.exe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB" "OwnCTB"#RuncmD,
+  "<xyscripts>\XYAHKLiveFilter.exe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB" "$OwnCTB" "$Quote"#RuncmD,
   " <tab>", L),, 0;
  }

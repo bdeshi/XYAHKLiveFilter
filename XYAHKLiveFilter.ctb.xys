@@ -1,6 +1,6 @@
  //XYAHKLiveFilter.ctb/v4.5.0b//author:SammaySarkar
  //http://xyplorer.com/xyfc/viewtopic.php?&t=12588
- https://github.com/smsrkr/XYAHKLiveFilter
+ //https://github.com/smsrkr/XYAHKLiveFilter
 
  $XYAHKLiveFilterExe = "<xyscripts>\XYAHKLiveFilter.exe";
  //$XYAHKLiveFilerExe = "path\to\autohotkey.exe"" ""<xyscripts>\XYAHKLiveFilter.ahk";
@@ -8,15 +8,15 @@
 
  //ctb index when a ctb is associated with XYAHKLiveFilter. The script can control it's pressed state
  //Set to 0 to disable, but then why are you using this ctb script at all?
- $CTB = <get trigger ctbindex>;
+ $OwnCTB = <get trigger ctbindex>;
 
 
- if ($CTB > 0){ctbicon($XYAHKLiveFilterIco, $CTB);}
+ if ($OwnCTB > 0){ctbicon($XYAHKLiveFilterIco, $OwnCTB);}
 
  perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
  if ($p_XYAHKLiveFilter_A != 1)||($p_XYAHKLiveFilter_B != <hwnd>) {
   $p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;
-  if ($CTB > 0){ctbstate(1, $CTB);} //set pressed state
+  if ($OwnCTB > 0){ctbstate(1, $OwnCTB);} //set pressed state
 
   //following variables are customizable options, each of these can be set empty (passed as cmdline args)
   //$FocusHotkey='^`': Keyboard shortcut to focusbox filter. ^` = CTRL+`, !+' = ALT+SHIFT+', !Space = ALT+SPACE
@@ -28,9 +28,12 @@
   //$ABPadding=5: Y-axis position adjustment (in pixels) for filterbox. Use a (small) number: 0,4,-3 etc
   //This should be modified only if filterbox top margin doesn't match addressbar's. No effect if $SyncToAB != 1
   $ABPadding   = 5 ;
+  //$Quote='S': Controls how the VF pattern is quoted. Use "S" for single quotes or "D" for double quotes.
+  //Any quotes inside the pattern are taken care of. XY variables are not resolved in sinlge quotes.
+  $Quote       = 'S' ;
 
-  run """$XYAHKLiveFilterExe"" ""<hwnd>"" ""$FocusHotkey"" ""$ABPadding"" ""$SyncToAB"" ""$CTB""",, 0;
+  run """$XYAHKLiveFilterExe"" ""<hwnd>"" ""$FocusHotkey"" ""$ABPadding"" ""$SyncToAB"" ""$OwnCTB"" ""$Quote""",, 0;
  }
  else {
-  if ($CTB > 0){ctbstate(0, $CTB);} //set pressed state
+  if ($OwnCTB > 0){ctbstate(0, $OwnCTB);} //set pressed state
  }

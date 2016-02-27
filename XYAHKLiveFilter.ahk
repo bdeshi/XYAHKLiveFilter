@@ -24,7 +24,13 @@ ABPadding	= %3%					;manual adjustent of GUI Y (for same Y of AB)
 ABPadding	:= (ABPadding+0 == "") ? 5 : ABPadding
 SyncPos		= %4%					;sync GUI position with AB (else at the topleft of XY)
 OwnCTB		= %5%					;ID of associated custom toolbar button in XY (>= 0)
-;Quote		= %6%					;Pattern quoting; S or D: single-quotes or double
+Quote		= %6%					;Pattern quoting; S or D: single-quotes or double
+;validate Quote
+If Quote in S,D,s,d
+	Quote := Quote
+Else
+	Quote := "S"
+Quote := (Quote = "S") ? "'" : """" ;single '=' case-insensitive compare
 
 OnExit, ExitRoutine					;need to cleanup before exit
 OnMessage(0x4a, "MsgFromXY")		;WM_COPYDATA
@@ -161,11 +167,8 @@ Return
 ;get filterbox content and pass to XY
 UpdateFilter:
 	GuiControlGet, StrFilter,, %GUIEdithWnd%	;get current filterbox text
-	; escape and/or enclose in SINGLE-quotes (so pattern stays non-resolved)
-	IfInString, StrFilter, % "'"
-		StrFilter := "'" StrReplace(StrFilter, "'", "''") "'"
-	Else
-		StrFilter := "'" StrFilter "'"
+	; escape and enclose in specified quotes
+	StrFilter := Quote . StrReplace(StrFilter, Quote, Quote . Quote) . Quote
 	;same filter twice resets VF, so skip that
 	If (LastFilter != StrFilter) {			;check if last sent filter is unique
 		LastFilter := StrFilter				;remember current filter as last one
