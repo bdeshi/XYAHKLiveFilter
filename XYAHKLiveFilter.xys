@@ -22,28 +22,33 @@
   $Quote       = 'S'  ;
   //-------------------------------
   //NextAction=1: Controls what subsequent tries to start XYAHKLiveFilter do. 1: refocus, 2: close.
-  //So you can, for example, click the CTB once to open the filterbox, and click again to focus it.
-  $NextAction  =  1   ;
+  //So you can, for example, call the script once to open the filterbox, and run again to focus it.
+  //NextActionCTB=2: same as $NextAction, but overrides it when run via CTB.
+  //So clicking the CTB will close it, matching XYplorer toggle button behavior, but running the xys
+  //or calling it from UDC or Catalog etc will focus it instead.
+  $NextAction    = 1  ;
+  $NextActionCTB = 2  ;
   //-------------------------------
-  //$OwnCTB=0: You _may_ set this to the CTBIndex of any associated CTB. But you're better off using
-  //XYAHKLiveFilter.CTB.xys for CTB association.
-  $OwnCTB     =  0   ;
+
+  //path to XYAHKLiveFilter.exe. change this only if you have "installed" to a non-default location.
+  $XYAHKLiveFilterExe = "<xyscripts>\XYAHKLiveFilter.exe";
+  //$XYAHKLiveFilterExe = "<@programs>\autohotkey\autohotkey.exe"" ""XYAHKLiveFilter.ahk";
 
   //------------------------------//
   // DO NOT MODIFY ANYTHING BELOW //
   //------------------------------//
 
-  $XYAHKLiveFilterExe = "<xyscripts>\XYAHKLiveFilter.exe";
-  //$XYAHKLiveFilterExe = "<@programs>\autohotkey\autohotkey.exe"" ""XYAHKLiveFilter.ahk";
+  $OwnCTB = <get trigger ctbindex>;
   perm $p_XYAHKLiveFilter_A, $p_XYAHKLiveFilter_B;
   if ($p_XYAHKLiveFilter_A != 1)||(gettoken($p_XYAHKLiveFilter_B,1) != <hwnd>){
     $p_XYAHKLiveFilter_A = 1; $p_XYAHKLiveFilter_B = <hwnd>;
     if ($OwnCTB > 0) {ctbstate(1, $OwnCTB);}
     run trim(<<<#RuncmD
-    "$XYAHKLiveFilterExe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB" "$OwnCTB" "$Quote"#RuncmD,
-    " <tab>", L),, 0;
+     "$XYAHKLiveFilterExe" <hwnd> "$FocusHotkey" "$ABPadding" "$SyncToAB" "$OwnCTB" "$Quote"#RuncmD,
+     " <tab>", L),, 0;
   } else {
     $action = 'FOCUS QUIT';
-    $action = gettoken($action, $NextAction);
-    copydata gettoken($p_XYAHKLiveFilter_B, 2), $action, 1;
+    if ($OwnCTB > 0) { $NextAction = $NextActionCTB; }
+    $action = gettoken($action, ((strpos('012', $NextAction) < 1) ? 1 : $NextAction));
+    if ($action) { copydata gettoken($p_XYAHKLiveFilter_B, 2), $action, 1; }
   }

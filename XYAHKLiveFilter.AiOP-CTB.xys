@@ -9,7 +9,7 @@
 "_Initialize"
   // icon and caption
   $ico = '<xyscripts>\XYAHKLiveFilter.ico';
-  $cap = "  LC: open XYAHKLiveFilter<crlf>------------------------<crlf>RC: 'Reset' XYAHKLiveFilter";
+  $cap = "  LC: XYAHKLiveFilter (toggle or focus)<crlf><crlf>RC: 'Reset' XYAHKLiveFilter";
   $lc  = '_lclick'; // left-click   scripts label(s) ;-separated
   $rc  = '_rclick;_rclick1'; // rights-click scripts label(s) ;-separated
 
@@ -24,14 +24,12 @@
 /*==LCLICK======================================*/
 
 "Open XYAHKLiveFilter|<xyscripts>\XYAHKLiveFilter.ico : _lclick"
-  $FocusHotkey = "^`" ;/*Ensure this matches associated shortcut!*/
-  if isset($p_XYAHKLiveFilter_A){sendkeys $FocusHotkey;}
-  else {load "<xyscripts>\XYAHKLiveFilter.CTB.xys";}
+  load "<xyscripts>\XYAHKLiveFilter.xys";
 
 
 /*==RCLICK======================================*/
 
 "Reset|:refreshsus : _rclick"
-   filter;unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;ctbstate(0);
-"edit|:udc : _rclick1"
-   open "<xyscripts>\XYAHKLiveFilter.ctb.xys";
+   unset $p_XYAHKLiveFilter_A,$p_XYAHKLiveFilter_B;ctbstate(0);
+"edit script|:udc : _rclick1"
+   open "<xyscripts>\XYAHKLiveFilter.xys";
