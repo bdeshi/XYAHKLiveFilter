@@ -1,4 +1,4 @@
-;XYAHKLiveFilter.ahk/v5.0.0b/author:SammaySarkar
+;XYAHKLiveFilter.ahk/v5.0.1b/author:SammaySarkar
 ;http://xyplorer.com/xyfc/viewtopic.php?t=12588
 ;https://github.com/smsrkr/XYAHKLiveFilter
 
