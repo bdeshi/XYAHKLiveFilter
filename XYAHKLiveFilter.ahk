@@ -315,6 +315,8 @@ GetFont(arg_hwnd) {
 ;cleanup filter and perms on exit. Triggered on "normal" script/GUI exit
 ExitRoutine:
 	GUI, Hide				;exiting "looks" slightly faster
+	SetTimer, UpdatePosAB, Off
+	SetTimer, UpdatePosWin, Off
 	If WinExist("ahk_id " . XYhWnd) {
 		WinActivate, ahk_id %XYhWnd%	;reactivate parent
 		If (SyncPos == 1)				;revert AB visibility to pre-exec
