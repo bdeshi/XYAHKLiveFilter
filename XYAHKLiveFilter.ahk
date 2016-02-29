@@ -287,7 +287,7 @@ MsgFromXY(wParam, lParam) {
 	cbData := NumGet(lParam+A_PtrSize)/2,CopyOfData := StrGet(StringAddress)
 	dwData := NumGet(lParam+0) ; dwData is 1st DWORD sized member
 	;mode 0==4194304/1==4194305/2==4194306
-	If (dwData == dwData[1]) ; mode 0, continue
+	If (dwData == dwDataMode[1]) ; mode 0, continue
 		StringLeft,ReceivedData,CopyOfData,cbData
 	Else { ;mode 1, trigger app action
 		StringLeft,ActionData,CopyOfData,cbData
